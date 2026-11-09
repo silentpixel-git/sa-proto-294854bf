@@ -17,6 +17,7 @@
 <style>
   /* Telegrafen semantic colours (Telegrafen Design Tokens v1.4.4, Colors: Light / Dark) */
   :root {
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     color-scheme: light;
     --text-default: #293351;          /* Text/Default */
     --text-subtle: #4f5b7d;           /* Text/Subtle */
@@ -363,8 +364,9 @@
     border: 2px solid var(--border-input);
     background: var(--surface-default);
     display: grid; place-items: center; padding: 0; cursor: pointer;
-    transition: border-color .15s;
+    transition: border-color .15s, transform .16s var(--ease-out);
   }
+  .radio:active { transform: scale(.94); }
   .radio::after {
     content: ""; width: 12px; height: 12px; border-radius: 50%;
     background: var(--surface-action); transform: scale(0); transition: transform .18s cubic-bezier(.3,1.5,.6,1);
@@ -520,7 +522,7 @@
   .btn {
     height: 48px; padding: 12px 28px; border: 0; border-radius: 1000px; cursor: pointer;
     font-size: 18px; font-weight: 500; line-height: 1.4; display: inline-flex; align-items: center; gap: 0;
-    transition: filter .15s;
+    transition: filter .15s, transform .16s var(--ease-out);
   }
   .btn--secondary { background: var(--surface-action-subtle); color: var(--text-action); }
   .btn--primary { background: var(--surface-action); color: var(--text-inverted); padding-right: 20px; }
@@ -543,7 +545,7 @@
   @keyframes chipIn { from { opacity: 0; transform: scale(.9); } }
   .edit-btn {
     width: 28px; height: 28px; padding: 4px; border: 0; border-radius: 1000px; cursor: pointer;
-    background: var(--surface-action-subtle); display: grid; place-items: center; transition: filter .15s;
+    background: var(--surface-action-subtle); display: grid; place-items: center; transition: filter .15s, transform .16s var(--ease-out);
   }
   .edit-btn .ico { width: 20px; height: 20px; }
   .edit-btn:hover { filter: brightness(.95); }
@@ -564,7 +566,7 @@
   .modal__title { flex: 1; font-size: 32px; font-weight: 500; line-height: 1.2; margin: 0; }
   .modal__close {
     width: 40px; height: 40px; border: 0; border-radius: 1000px; background: none; cursor: pointer;
-    display: grid; place-items: center;
+    display: grid; place-items: center; transition: background-color .15s, transform .16s var(--ease-out);
   }
   .modal__close:hover { background: var(--surface-action-subtle); }
   .modal__close .ico { width: 24px; height: 24px; }
@@ -592,14 +594,31 @@
   .modal__actions { display: flex; justify-content: flex-end; gap: 16px; margin-top: 24px; }
   .mbtn {
     height: 40px; padding: 0 22px; border: 0; border-radius: 1000px; cursor: pointer;
-    font: inherit; font-size: 16px; font-weight: 500; line-height: 1.4; transition: filter .15s;
+    font: inherit; font-size: 16px; font-weight: 500; line-height: 1.4; transition: filter .15s, transform .16s var(--ease-out);
   }
   .mbtn--secondary { background: var(--surface-action-subtle); color: var(--text-action); }
   .mbtn--primary { background: var(--surface-action); color: var(--text-inverted); }
   .mbtn:hover { filter: brightness(.95); }
   .mbtn--primary:hover { filter: brightness(1.15); }
   .mbtn:focus-visible, .modal__close:focus-visible { outline: 2px solid var(--surface-action); outline-offset: 2px; }
-  @media (prefers-reduced-motion: reduce) { .modal[open], .modal[open]::backdrop, .chip.is-new { animation: none; } }
+  /* Press feedback */
+  .btn:active, .mbtn:active, .edit-btn:active, .modal__close:active { transform: scale(.97); }
+  /* Modal exit mirrors the entrance, slightly faster */
+  .modal.is-closing { animation: modalOut .15s var(--ease-out) forwards; }
+  .modal.is-closing::backdrop { animation: fadeOut .15s var(--ease-out) forwards; }
+  @keyframes modalOut { to { opacity: 0; transform: translateY(4px) scale(.98); } }
+  @keyframes fadeOut { to { opacity: 0; } }
+  /* Removed chips fade out before the row re-flows */
+  .chip.is-leaving { opacity: 0; transform: scale(.95); transition: opacity .12s var(--ease-out), transform .12s var(--ease-out); }
+  /* Old price + yearly saving fade in/out (opacity only, keeps layout stable while dragging) */
+  .price-old, .price-sub { transition: opacity .15s var(--ease-out); }
+  .is-off { opacity: 0; }
+  @media (prefers-reduced-motion: reduce) {
+    .modal[open], .chip.is-new { animation: fadeIn .15s ease-out; }
+    .modal.is-closing { animation-name: fadeOut; }
+    .chip.is-leaving { transform: none; }
+    .btn:active, .mbtn:active, .edit-btn:active, .modal__close:active, .radio:active { transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -782,10 +801,10 @@
           </div>
           <div class="card__aside card__aside--pkg">
             <div class="price-row">
-              <span class="price-old" id="pkgOld" hidden>1 997,-</span>
+              <span class="price-old is-off" id="pkgOld" aria-hidden="true">1 997,-</span>
               <span class="price-new" id="pkgPrice">1 997,-/md.</span>
             </div>
-            <p class="price-sub" id="pkgDiscount" hidden>Årlig besparelse: 0,-</p>
+            <p class="price-sub is-off" id="pkgDiscount" aria-hidden="true">Årlig besparelse: 0,-</p>
           </div>
           <div class="trailing" id="pkgSelect">
             <button class="radio" id="pkgRadio" role="radio" aria-checked="true" aria-label="Velg anbefalt bredbåndspakke"></button>
@@ -994,8 +1013,10 @@
     $("tipText").textContent = (d ? "-" : "") + kr(d) + "/md.";
     $("pkgOld").textContent = kr(base);
     $("pkgPrice").textContent = kr(monthly) + "/md.";
-    $("pkgOld").hidden = d === 0;
-    $("pkgDiscount").hidden = d === 0;
+    ["pkgOld", "pkgDiscount"].forEach((id) => {
+      $(id).classList.toggle("is-off", d === 0);
+      $(id).setAttribute("aria-hidden", String(d === 0));
+    });
     $("pkgDiscount").textContent = "Årlig besparelse: " + kr((base - monthly) * 12);
 
     const est = ESTABLISHMENT_PRICE - state.option.discount;
@@ -1010,12 +1031,19 @@
     const items = [byId(SPEEDS, p.speed).label];
     if (p.tv !== "none") items.push(byId(TVS, p.tv).label);
     EXTRAS.forEach((x) => { if (p.extras.includes(x.id)) items.push(x.label); });
-    const ul = $("pkgChips"); ul.innerHTML = "";
-    items.forEach((t) => {
-      const li = document.createElement("li");
-      li.className = "chip" + (prev && !prev.includes(t) ? " is-new" : "");
-      li.textContent = t; ul.appendChild(li);
-    });
+    const ul = $("pkgChips");
+    const build = () => {
+      ul.innerHTML = "";
+      items.forEach((t) => {
+        const li = document.createElement("li");
+        li.className = "chip" + (prev && !prev.includes(t) ? " is-new" : "");
+        li.textContent = t; ul.appendChild(li);
+      });
+    };
+    const leaving = [...ul.children].filter((li) => !items.includes(li.textContent));
+    if (!prev || !leaving.length) return build();
+    leaving.forEach((li) => li.classList.add("is-leaving"));
+    setTimeout(build, 120);
   }
 
   // ---------- Package modal ----------
@@ -1046,8 +1074,22 @@
   }
   form.addEventListener("change", (e) => { if (e.target.name === "tv") syncTvDependency(); });
   $("pkgEdit").addEventListener("click", () => { fillModal(); modal.showModal(); });
-  modal.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => modal.close("cancel")));
-  modal.addEventListener("click", (e) => { if (e.target === modal) modal.close("cancel"); });
+  function closeModal(reason, after) {
+    if (!modal.open || modal.classList.contains("is-closing")) return;
+    modal.classList.add("is-closing");
+    let done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      modal.classList.remove("is-closing");
+      modal.close(reason);
+      if (after) after();
+    };
+    modal.addEventListener("animationend", (e) => { if (e.target === modal) finish(); });
+    setTimeout(finish, 250); // fallback if animations are disabled
+  }
+  modal.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => closeModal("cancel")));
+  modal.addEventListener("click", (e) => { if (e.target === modal) closeModal("cancel"); });
+  modal.addEventListener("cancel", (e) => { e.preventDefault(); closeModal("cancel"); });
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     const prev = [...$("pkgChips").children].map((li) => li.textContent);
@@ -1056,10 +1098,11 @@
       tv: form.elements.tv.value,
       extras: [...form.querySelectorAll('input[name="extras"]:checked')].map((i) => i.value),
     };
-    modal.close("save");
-    renderChips(prev);
-    render();
-    $("pkgEdit").focus();
+    closeModal("save", () => {
+      renderChips(prev);
+      render();
+      $("pkgEdit").focus();
+    });
   });
 
   // ---------- Address ----------
