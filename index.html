@@ -332,7 +332,8 @@
   .card__main { flex: 1; min-width: 0; padding: 16px 16px 16px 0; display: flex; flex-direction: column; gap: 8px; }
   .card__aside { padding: 16px 16px 16px 0; display: flex; flex-direction: column; align-items: flex-end; text-align: right; white-space: nowrap; }
   .card__aside--center { justify-content: center; }
-  .card__aside--pkg { min-width: 161px; }
+  /* Fixed width so the slider box doesn't resize as prices change */
+  .card__aside--pkg { width: 200px; flex: none; }
   .card__title { font-size: 20px; font-weight: 500; line-height: 1.2; }
   .label { font-size: 16px; font-weight: 500; line-height: 1.2; color: var(--text-subtle); }
 
@@ -744,7 +745,7 @@
         <label class="label" for="address">Installasjonsadresse:</label>
         <div class="field">
           <i class="field__icon ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJTZWFyY2giPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTEzLjUgMi4yNjM5MkM4Ljk0MzY1IDIuMjYzOTIgNS4yNSA1Ljk1NzU3IDUuMjUgMTAuNTEzOUM1LjI1IDEyLjUyMiA1Ljk2NzQ3IDE0LjM2MjYgNy4xNjAwNSAxNS43OTMyTDIuNDY5NjcgMjAuNDgzNkMyLjE3Njc4IDIwLjc3NjUgMi4xNzY3OCAyMS4yNTE0IDIuNDY5NjcgMjEuNTQ0MkMyLjc2MjU2IDIxLjgzNzEgMy4yMzc0NCAyMS44MzcxIDMuNTMwMzMgMjEuNTQ0Mkw4LjIyMDcxIDE2Ljg1MzlDOS42NTEzMyAxOC4wNDY0IDExLjQ5MTkgMTguNzYzOSAxMy41IDE4Ljc2MzlDMTguMDU2MyAxOC43NjM5IDIxLjc1IDE1LjA3MDMgMjEuNzUgMTAuNTEzOUMyMS43NSA1Ljk1NzU3IDE4LjA1NjMgMi4yNjM5MiAxMy41IDIuMjYzOTJaTTYuNzUgMTAuNTEzOUM2Ljc1IDYuNzg1OTkgOS43NzIwOCAzLjc2MzkyIDEzLjUgMy43NjM5MkMxNy4yMjc5IDMuNzYzOTIgMjAuMjUgNi43ODU5OSAyMC4yNSAxMC41MTM5QzIwLjI1IDE0LjI0MTggMTcuMjI3OSAxNy4yNjM5IDEzLjUgMTcuMjYzOUM5Ljc3MjA4IDE3LjI2MzkgNi43NSAxNC4yNDE4IDYuNzUgMTAuNTEzOVoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==)"></i>
-          <input id="address" type="text" value="Eksempelveien 1, 0000 Eksempelsted" placeholder="Søk etter adresse" autocomplete="street-address" />
+          <input id="address" type="text" value="Snarøyveien 30, 1360 Fornebu" placeholder="Søk etter adresse" autocomplete="street-address" />
           <button class="icon-btn" id="addressClear" type="button" aria-label="Tøm adresse"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJSZW1vdmUiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTguNzU1NjcgNy42NTA3QzguNDUwNTcgNy4zNDU2IDcuOTU1OTEgNy4zNDU2IDcuNjUwODIgNy42NTA3QzcuMzQ1NzIgNy45NTU3OSA3LjM0NTcyIDguNDUwNDYgNy42NTA4MiA4Ljc1NTU1TDExLjM5NTMgMTIuNUw3LjY1MDcgMTYuMjQ0NkM3LjM0NTYgMTYuNTQ5NyA3LjM0NTYgMTcuMDQ0MyA3LjY1MDcgMTcuMzQ5NEM3Ljk1NTc5IDE3LjY1NDUgOC40NTA0NSAxNy42NTQ1IDguNzU1NTUgMTcuMzQ5NEwxMi41MDAxIDEzLjYwNDlMMTYuMjQ0NiAxNy4zNDkzQzE2LjU0OTcgMTcuNjU0NCAxNy4wNDQzIDE3LjY1NDQgMTcuMzQ5NCAxNy4zNDkzQzE3LjY1NDUgMTcuMDQ0MiAxNy42NTQ1IDE2LjU0OTUgMTcuMzQ5NCAxNi4yNDQ0TDEzLjYwNSAxMi41TDE3LjM0OTMgOC43NTU2N0MxNy42NTQ0IDguNDUwNTcgMTcuNjU0NCA3Ljk1NTkxIDE3LjM0OTMgNy42NTA4MkMxNy4wNDQyIDcuMzQ1NzIgMTYuNTQ5NSA3LjM0NTcyIDE2LjI0NDQgNy42NTA4MkwxMi41MDAxIDExLjM5NTFMOC43NTU2NyA3LjY1MDdaIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==);width:25px;height:25px"></i></button>
         </div>
       </div>
