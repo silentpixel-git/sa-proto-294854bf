@@ -946,7 +946,6 @@
   const STEP = 50, MAX_DISCOUNT = 800;
   const OPTIONS = [
     { id: "b3000", label: "3 000,- i rabatt ved 12 md. binding", discount: 3000 },
-    { id: "b4995", label: "4 995,- i rabatt ved 12 md. binding", discount: 4995 },
     { id: "none",  label: "Ingen binding", discount: 0 },
   ];
 
@@ -1011,7 +1010,6 @@
     const items = [byId(SPEEDS, p.speed).label];
     if (p.tv !== "none") items.push(byId(TVS, p.tv).label);
     EXTRAS.forEach((x) => { if (p.extras.includes(x.id)) items.push(x.label); });
-    items.push("Frakt");
     const ul = $("pkgChips"); ul.innerHTML = "";
     items.forEach((t) => {
       const li = document.createElement("li");
