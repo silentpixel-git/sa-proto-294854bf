@@ -49,6 +49,8 @@
     --on-status: #ffffff;
     --text-brand-tag: #070452;
     --sheen: rgba(255,255,255,.95);
+    --backdrop: rgba(0,11,46,.5);
+    --modal-edge: transparent;
     --radius-s: 8px;
     --font: "Telenor Evolution UI", "Telenor Evolution", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   }
@@ -82,6 +84,8 @@
     --on-status: #000b2e;
     --text-brand-tag: #42f0f0;
     --sheen: rgba(66,240,240,.4);
+    --backdrop: rgba(0,0,0,.65);
+    --modal-edge: #4f5b7d;
   }
   .theme-anim, .theme-anim *, .theme-anim *::before, .theme-anim *::after {
     transition: background-color .3s ease, color .3s ease, border-color .3s ease, box-shadow .3s ease !important;
@@ -522,6 +526,79 @@
   .btn--primary .ico { width: 24px; height: 24px; margin-left: 8px; }
   .btn:hover { filter: brightness(.95); }
   .btn--primary:hover { filter: brightness(1.15); }
+
+  /* ---------- Address, chips, edit ---------- */
+  .address-group { margin-bottom: 16px; }
+  .address-group .icon-btn[hidden] { display: none; }
+  .field-cols > .select { width: auto; }
+  .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .chips__list { display: contents; list-style: none; }
+  .chip {
+    display: inline-flex; align-items: center; height: 28px; padding: 4px 10px; border-radius: 16px;
+    background: var(--surface-default); border: 1px solid var(--border-input);
+    color: var(--text-default); font-size: 14px; font-weight: 300; line-height: 1.4; white-space: nowrap;
+  }
+  .chip.is-new { animation: chipIn .3s cubic-bezier(.25, 1, .5, 1); }
+  @keyframes chipIn { from { opacity: 0; transform: scale(.9); } }
+  .edit-btn {
+    width: 28px; height: 28px; padding: 4px; border: 0; border-radius: 1000px; cursor: pointer;
+    background: var(--surface-action-subtle); display: grid; place-items: center; transition: filter .15s;
+  }
+  .edit-btn .ico { width: 20px; height: 20px; }
+  .edit-btn:hover { filter: brightness(.95); }
+  .edit-btn:focus-visible { outline: 2px solid var(--surface-action); outline-offset: 2px; }
+
+  /* ---------- Modal ---------- */
+  .modal {
+    width: 575px; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); margin: auto; padding: 24px;
+    border: 1px solid var(--modal-edge); border-radius: var(--radius-s); background: var(--page-default); color: var(--text-default);
+    box-shadow: 0 16px 48px rgba(0,11,46,.24); overflow: auto;
+  }
+  .modal::backdrop { background: var(--backdrop); }
+  .modal[open] { animation: modalIn .22s cubic-bezier(.25, 1, .5, 1); }
+  .modal[open]::backdrop { animation: fadeIn .22s ease-out; }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(8px) scale(.98); } }
+  @keyframes fadeIn { from { opacity: 0; } }
+  .modal__head { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .modal__title { flex: 1; font-size: 32px; font-weight: 500; line-height: 1.2; margin: 0; }
+  .modal__close {
+    width: 40px; height: 40px; border: 0; border-radius: 1000px; background: none; cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .modal__close:hover { background: var(--surface-action-subtle); }
+  .modal__close .ico { width: 24px; height: 24px; }
+  .modal__body { display: flex; flex-direction: column; gap: 20px; }
+  .mgroups { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .mgroup { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .mgroup__title { padding: 0; font-size: 16px; font-weight: 500; line-height: 1.4; }
+  .mgroup__rule { margin: 4px 0 4px; font-size: 14px; font-weight: 300; line-height: 1.4; color: var(--text-subtle); }
+  .modal__note { margin: -4px 0 0; font-size: 16px; font-weight: 300; line-height: 1.5; color: var(--text-subtle); }
+  .choice .radio-box {
+    width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; border: 2px solid var(--border-input);
+    background: var(--surface-default); display: grid; place-items: center; transition: border-color .15s;
+  }
+  .choice .radio-box::after {
+    content: ""; width: 12px; height: 12px; border-radius: 50%; background: var(--surface-action);
+    transform: scale(0); transition: transform .18s cubic-bezier(.3,1.5,.6,1);
+  }
+  .choice:hover .radio-box { border-color: var(--border-input-active); }
+  .choice input:checked + .radio-box { border-color: var(--surface-action); }
+  .choice input:checked + .radio-box::after { transform: scale(1); }
+  .choice input:focus-visible + .radio-box { outline: 2px solid var(--surface-action); outline-offset: 2px; }
+  .checkbox.is-disabled { cursor: not-allowed; color: var(--text-disabled); }
+  .checkbox.is-disabled .checkbox__box { background: var(--surface-strong); border-color: var(--border-subtle); }
+  .checkbox__hint { margin-left: auto; font-size: 14px; color: var(--text-subtle); }
+  .modal__actions { display: flex; justify-content: flex-end; gap: 16px; margin-top: 24px; }
+  .mbtn {
+    height: 40px; padding: 0 22px; border: 0; border-radius: 1000px; cursor: pointer;
+    font: inherit; font-size: 16px; font-weight: 500; line-height: 1.4; transition: filter .15s;
+  }
+  .mbtn--secondary { background: var(--surface-action-subtle); color: var(--text-action); }
+  .mbtn--primary { background: var(--surface-action); color: var(--text-inverted); }
+  .mbtn:hover { filter: brightness(.95); }
+  .mbtn--primary:hover { filter: brightness(1.15); }
+  .mbtn:focus-visible, .modal__close:focus-visible { outline: 2px solid var(--surface-action); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { .modal[open], .modal[open]::backdrop, .chip.is-new { animation: none; } }
 </style>
 </head>
 <body>
@@ -592,8 +669,8 @@
       <div class="mi"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJTZWFyY2giPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTEzLjUgMi4yNjM5MkM4Ljk0MzY1IDIuMjYzOTIgNS4yNSA1Ljk1NzU3IDUuMjUgMTAuNTEzOUM1LjI1IDEyLjUyMiA1Ljk2NzQ3IDE0LjM2MjYgNy4xNjAwNSAxNS43OTMyTDIuNDY5NjcgMjAuNDgzNkMyLjE3Njc4IDIwLjc3NjUgMi4xNzY3OCAyMS4yNTE0IDIuNDY5NjcgMjEuNTQ0MkMyLjc2MjU2IDIxLjgzNzEgMy4yMzc0NCAyMS44MzcxIDMuNTMwMzMgMjEuNTQ0Mkw4LjIyMDcxIDE2Ljg1MzlDOS42NTEzMyAxOC4wNDY0IDExLjQ5MTkgMTguNzYzOSAxMy41IDE4Ljc2MzlDMTguMDU2MyAxOC43NjM5IDIxLjc1IDE1LjA3MDMgMjEuNzUgMTAuNTEzOUMyMS43NSA1Ljk1NzU3IDE4LjA1NjMgMi4yNjM5MiAxMy41IDIuMjYzOTJaTTYuNzUgMTAuNTEzOUM2Ljc1IDYuNzg1OTkgOS43NzIwOCAzLjc2MzkyIDEzLjUgMy43NjM5MkMxNy4yMjc5IDMuNzYzOTIgMjAuMjUgNi43ODU5OSAyMC4yNSAxMC41MTM5QzIwLjI1IDE0LjI0MTggMTcuMjI3OSAxNy4yNjM5IDEzLjUgMTcuMjYzOUM5Ljc3MjA4IDE3LjI2MzkgNi43NSAxNC4yNDE4IDYuNzUgMTAuNTEzOVoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==)"></i><span>Ordresøk</span></div>
       <div class="mi"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJTbXMiPgo8ZyBpZD0iSWNvbiI+CjxwYXRoIGQ9Ik0xNS4zNzUgMTMuMTI1QzE1Ljk5NjMgMTMuMTI1IDE2LjUgMTIuNjIxMyAxNi41IDEyQzE2LjUgMTEuMzc4NyAxNS45OTYzIDEwLjg3NSAxNS4zNzUgMTAuODc1QzE0Ljc1MzcgMTAuODc1IDE0LjI1IDExLjM3ODcgMTQuMjUgMTJDMTQuMjUgMTIuNjIxMyAxNC43NTM3IDEzLjEyNSAxNS4zNzUgMTMuMTI1WiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTMuMTI1IDEyQzEzLjEyNSAxMi42MjEzIDEyLjYyMTMgMTMuMTI1IDEyIDEzLjEyNUMxMS4zNzg3IDEzLjEyNSAxMC44NzUgMTIuNjIxMyAxMC44NzUgMTJDMTAuODc1IDExLjM3ODcgMTEuMzc4NyAxMC44NzUgMTIgMTAuODc1QzEyLjYyMTMgMTAuODc1IDEzLjEyNSAxMS4zNzg3IDEzLjEyNSAxMloiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTguNjI1IDEzLjEyNUM5LjI0NjMyIDEzLjEyNSA5Ljc1IDEyLjYyMTMgOS43NSAxMkM5Ljc1IDExLjM3ODcgOS4yNDYzMiAxMC44NzUgOC42MjUgMTAuODc1QzguMDAzNjggMTAuODc1IDcuNSAxMS4zNzg3IDcuNSAxMkM3LjUgMTIuNjIxMyA4LjAwMzY4IDEzLjEyNSA4LjYyNSAxMy4xMjVaIiBmaWxsPSIjNEY1QjdEIi8+CjxwYXRoIGQ9Ik0zIDZDMyA1LjU4NTc5IDMuMzM1NzkgNS4yNSAzLjc1IDUuMjVIMjAuMjVDMjAuNjY0MiA1LjI1IDIxIDUuNTg1NzkgMjEgNlYxOEMyMSAxOC40MTQyIDIwLjY2NDIgMTguNzUgMjAuMjUgMTguNzVIMTguMzc1VjIxQzE4LjM3NSAyMS4zMDMzIDE4LjE5MjMgMjEuNTc2OCAxNy45MTIgMjEuNjkyOUMxNy42MzE4IDIxLjgwOSAxNy4zMDkyIDIxLjc0NDggMTcuMDk0NyAyMS41MzAzTDE0LjMxNDMgMTguNzVIMy43NUMzLjMzNTc5IDE4Ljc1IDMgMTguNDE0MiAzIDE4VjZaTTE3LjYyNSAxNy4yNUMxNy4yMTA4IDE3LjI1IDE2Ljg3NSAxNy41ODU4IDE2Ljg3NSAxOEwxNC42MzE5IDE3LjI1TDE0LjYyNDMgMTcuMjVINC41VjYuNzVIMTkuNVYxNy4yNUgxNy42MjVaIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZmlsbD0iIzRGNUI3RCIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==)"></i><span>Send SMS til kunde</span></div>
       <div class="mi"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDb2lucyI+CjxnIGlkPSJJY29uIj4KPHBhdGggZD0iTTE1Ljc1IDExLjI1QzE1Ljc1IDEwLjgzNTggMTUuNDE0MiAxMC41IDE1IDEwLjVDMTQuNTg1OCAxMC41IDE0LjI1IDEwLjgzNTggMTQuMjUgMTEuMjVWMTUuNzVDMTQuMjUgMTYuMTY0MiAxNC41ODU4IDE2LjUgMTUgMTYuNUMxNS40MTQyIDE2LjUgMTUuNzUgMTYuMTY0MiAxNS43NSAxNS43NVYxMS4yNVoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTMuNzUgNC41QzMuNzUgNC4wODU3OSA0LjA4NTc5IDMuNzUgNC41IDMuNzVIMTUuNzVDMTYuMTY0MiAzLjc1IDE2LjUgNC4wODU3OSAxNi41IDQuNVY2LjkxNzI2QzE5LjUwNiA3LjU5OTM2IDIxLjc1IDEwLjI4NzYgMjEuNzUgMTMuNUMyMS43NSAxNy4yMjc5IDE4LjcyNzkgMjAuMjUgMTUgMjAuMjVIM0MyLjU4NTc5IDIwLjI1IDIuMjUgMTkuOTE0MiAyLjI1IDE5LjVWMTUuNzVDMi4yNSAxNS4zMzU4IDIuNTg1NzkgMTUgMyAxNUgzLjc1VjEyLjc1SDNDMi41ODU3OSAxMi43NSAyLjI1IDEyLjQxNDIgMi4yNSAxMlY4LjI1QzIuMjUgNy44MzU3OSAyLjU4NTc5IDcuNSAzIDcuNUgzLjc1VjQuNVpNMTUgNS4yNVY2Ljc1QzEzLjg4NDMgNi43NSAxMi44MzE4IDcuMDIwNyAxMS45MDQ2IDcuNUg1LjI1VjUuMjVIMTVaTTkuOTY4NzYgOUM5LjM4NzY4IDkuNjQ5MjMgOC45MzA0MiAxMC40MTE2IDguNjM0MDkgMTEuMjVIMy43NVY5SDkuOTY4NzZaTTUuMjUgMTIuNzVIOC4yOTEyQzguMjYzOTcgMTIuOTk2MyA4LjI1IDEzLjI0NjUgOC4yNSAxMy41QzguMjUgMTQuMDE1NSA4LjMwNzggMTQuNTE3NiA4LjQxNzI2IDE1SDUuMjVWMTIuNzVaTTEwIDE1VjE1LjEwNTRDMTAuNjc4MyAxNy4yMTk3IDEyLjY2MDQgMTguNzUgMTUgMTguNzVDMTcuODk5NSAxOC43NSAyMC4yNSAxNi4zOTk1IDIwLjI1IDEzLjVDMjAuMjUgMTAuNjAwNSAxNy44OTk1IDguMjUgMTUgOC4yNUMxMi4xMDA1IDguMjUgOS43NSAxMC42MDA1IDkuNzUgMTMuNUM5Ljc1IDE0LjAyMTIgOS44MjU5NiAxNC41MjQ3IDkuOTY3NDEgMTVIMTBaTTguOTUxNjQgMTYuNUM5LjM4NjI0IDE3LjM3NDUgMTAuMDA0OSAxOC4xNDE0IDEwLjc1NyAxOC43NUgzLjc1VjE2LjVIOC45NTE2NFoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9nPgo8L3N2Zz4K)"></i><span>Abonnementskalkulator</span></div>
-      <div class="mlink"><span>Bestill bredbånd &amp; TV</span><i class="ico ico--action" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFJpZ2h0Ij4KPHBhdGggaWQ9Ikljb24iIGQ9Ik0xNS45NTEyIDExLjUxOTlDMTYuMTgzIDExLjc5OCAxNi4xODMgMTIuMjAyIDE1Ljk1MTIgMTIuNDgwMkwxMC4zMjYyIDE5LjIzMDJDMTAuMDYxIDE5LjU0ODQgOS41ODgwOSAxOS41OTE0IDkuMjY5ODggMTkuMzI2MkM4Ljk1MTY3IDE5LjA2MSA4LjkwODY4IDE4LjU4ODEgOS4xNzM4NSAxOC4yNjk5TDE0LjM5ODcgMTJMOS4xNzM4NSA1LjczMDE2QzguOTA4NjggNS40MTE5NSA4Ljk1MTY3IDQuOTM5MDMgOS4yNjk4OCA0LjY3Mzg1QzkuNTg4MDkgNC40MDg2OCAxMC4wNjEgNC40NTE2NyAxMC4zMjYyIDQuNzY5ODhMMTUuOTUxMiAxMS41MTk5WiIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiMxMDIwRjkiLz4KPC9nPgo8L3N2Zz4K)"></i></div>
-      <div class="mlink"><span>Bestill mobil/abonnement</span><i class="ico ico--action" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFJpZ2h0Ij4KPHBhdGggaWQ9Ikljb24iIGQ9Ik0xNS45NTEyIDExLjUxOTlDMTYuMTgzIDExLjc5OCAxNi4xODMgMTIuMjAyIDE1Ljk1MTIgMTIuNDgwMkwxMC4zMjYyIDE5LjIzMDJDMTAuMDYxIDE5LjU0ODQgOS41ODgwOSAxOS41OTE0IDkuMjY5ODggMTkuMzI2MkM4Ljk1MTY3IDE5LjA2MSA4LjkwODY4IDE4LjU4ODEgOS4xNzM4NSAxOC4yNjk5TDE0LjM5ODcgMTJMOS4xNzM4NSA1LjczMDE2QzguOTA4NjggNS40MTE5NSA4Ljk1MTY3IDQuOTM5MDMgOS4yNjk4OCA0LjY3Mzg1QzkuNTg4MDkgNC40MDg2OCAxMC4wNjEgNC40NTE2NyAxMC4zMjYyIDQuNzY5ODhMMTUuOTUxMiAxMS41MTk5WiIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiMxMDIwRjkiLz4KPC9nPgo8L3N2Zz4K)"></i></div>
+      <div class="mlink"><span>Bestill</span><i class="ico ico--action" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFJpZ2h0Ij4KPHBhdGggaWQ9Ikljb24iIGQ9Ik0xNS45NTEyIDExLjUxOTlDMTYuMTgzIDExLjc5OCAxNi4xODMgMTIuMjAyIDE1Ljk1MTIgMTIuNDgwMkwxMC4zMjYyIDE5LjIzMDJDMTAuMDYxIDE5LjU0ODQgOS41ODgwOSAxOS41OTE0IDkuMjY5ODggMTkuMzI2MkM4Ljk1MTY3IDE5LjA2MSA4LjkwODY4IDE4LjU4ODEgOS4xNzM4NSAxOC4yNjk5TDE0LjM5ODcgMTJMOS4xNzM4NSA1LjczMDE2QzguOTA4NjggNS40MTE5NSA4Ljk1MTY3IDQuOTM5MDMgOS4yNjk4OCA0LjY3Mzg1QzkuNTg4MDkgNC40MDg2OCAxMC4wNjEgNC40NTE2NyAxMC4zMjYyIDQuNzY5ODhMMTUuOTUxMiAxMS41MTk5WiIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiMxMDIwRjkiLz4KPC9nPgo8L3N2Zz4K)"></i></div>
+      <div class="mlink"><span>Bestill abonnement</span><i class="ico ico--action" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFJpZ2h0Ij4KPHBhdGggaWQ9Ikljb24iIGQ9Ik0xNS45NTEyIDExLjUxOTlDMTYuMTgzIDExLjc5OCAxNi4xODMgMTIuMjAyIDE1Ljk1MTIgMTIuNDgwMkwxMC4zMjYyIDE5LjIzMDJDMTAuMDYxIDE5LjU0ODQgOS41ODgwOSAxOS41OTE0IDkuMjY5ODggMTkuMzI2MkM4Ljk1MTY3IDE5LjA2MSA4LjkwODY4IDE4LjU4ODEgOS4xNzM4NSAxOC4yNjk5TDE0LjM5ODcgMTJMOS4xNzM4NSA1LjczMDE2QzguOTA4NjggNS40MTE5NSA4Ljk1MTY3IDQuOTM5MDMgOS4yNjk4OCA0LjY3Mzg1QzkuNTg4MDkgNC40MDg2OCAxMC4wNjEgNC40NTE2NyAxMC4zMjYyIDQuNzY5ODhMMTUuOTUxMiAxMS41MTk5WiIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGZpbGw9IiMxMDIwRjkiLz4KPC9nPgo8L3N2Zz4K)"></i></div>
       <div class="mi" style="color:var(--text-action)"><i class="ico ico--action" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJBcnJvdyAvIENsb3NlIFBhbmVsIExlZnQiPgo8ZyBpZD0iSWNvbiI+CjxwYXRoIGQ9Ik0zLjI1IDIwLjVMMy4yNSA0QzMuMjUgMy41ODU3OSAzLjU4NTc5IDMuMjUgNCAzLjI1QzQuNDE0MjEgMy4yNSA0Ljc1IDMuNTg1NzkgNC43NSA0TDQuNzUgMjAuNUM0Ljc1IDIwLjkxNDIgNC40MTQyMSAyMS4yNSA0IDIxLjI1QzMuNTg1NzkgMjEuMjUgMy4yNSAyMC45MTQyIDMuMjUgMjAuNVoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjMTAyMEY5Ii8+CjxwYXRoIGQ9Ik0xMS45Njk3IDcuNDY5NzhDMTIuMjYyNiA3LjE3Njg5IDEyLjczNzQgNy4xNzY4OSAxMy4wMzAzIDcuNDY5NzhDMTMuMzIzMiA3Ljc2MjY4IDEzLjMyMzIgOC4yMzc1NSAxMy4wMzAzIDguNTMwNDRMMTAuMzEwOCAxMS4yNUgyMEMyMC40MTQyIDExLjI1IDIwLjc1IDExLjU4NTggMjAuNzUgMTJDMjAuNzUgMTIuNDE0MiAyMC40MTQyIDEyLjc1IDIwIDEyLjc1SDEwLjMxMDVMMTMuMDMwMyAxNS40Njk4QzEzLjMyMzIgMTUuNzYyNyAxMy4zMjMyIDE2LjIzNzUgMTMuMDMwMyAxNi41MzA0QzEyLjczNzQgMTYuODIzMyAxMi4yNjI2IDE2LjgyMzMgMTEuOTY5NyAxNi41MzA0TDcuOTY5NjcgMTIuNTMwNEM3LjgyOTAyIDEyLjM4OTggNy43NSAxMi4xOTkgNy43NSAxMi4wMDAxQzcuNzUgMTEuODAxMiA3LjgyOTAyIDExLjYxMDQgNy45Njk2NyAxMS40Njk4TDExLjk2OTcgNy40Njk3OFoiIGZpbGw9IiMxMDIwRjkiLz4KPC9nPgo8L2c+Cjwvc3ZnPgo=)"></i><span>Minimer</span></div>
     </nav>
 
@@ -662,8 +739,15 @@
 
     <!-- ================= Content slot: Screen 2 – Anbefaling bredbånd ================= -->
     <main class="content" id="screen-anbefaling" data-screen="anbefaling" hidden>
-      <h1 class="page-title">Anbefaling bredbånd</h1>
-      <p class="address"><strong>Installasjonsadresse:</strong> Eksempelveien 1, 0000 Eksempelsted</p>
+      <h1 class="page-title">Anbefalt bredbånd</h1>
+      <div class="field-group address-group">
+        <label class="label" for="address">Installasjonsadresse:</label>
+        <div class="field">
+          <i class="field__icon ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJTZWFyY2giPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTEzLjUgMi4yNjM5MkM4Ljk0MzY1IDIuMjYzOTIgNS4yNSA1Ljk1NzU3IDUuMjUgMTAuNTEzOUM1LjI1IDEyLjUyMiA1Ljk2NzQ3IDE0LjM2MjYgNy4xNjAwNSAxNS43OTMyTDIuNDY5NjcgMjAuNDgzNkMyLjE3Njc4IDIwLjc3NjUgMi4xNzY3OCAyMS4yNTE0IDIuNDY5NjcgMjEuNTQ0MkMyLjc2MjU2IDIxLjgzNzEgMy4yMzc0NCAyMS44MzcxIDMuNTMwMzMgMjEuNTQ0Mkw4LjIyMDcxIDE2Ljg1MzlDOS42NTEzMyAxOC4wNDY0IDExLjQ5MTkgMTguNzYzOSAxMy41IDE4Ljc2MzlDMTguMDU2MyAxOC43NjM5IDIxLjc1IDE1LjA3MDMgMjEuNzUgMTAuNTEzOUMyMS43NSA1Ljk1NzU3IDE4LjA1NjMgMi4yNjM5MiAxMy41IDIuMjYzOTJaTTYuNzUgMTAuNTEzOUM2Ljc1IDYuNzg1OTkgOS43NzIwOCAzLjc2MzkyIDEzLjUgMy43NjM5MkMxNy4yMjc5IDMuNzYzOTIgMjAuMjUgNi43ODU5OSAyMC4yNSAxMC41MTM5QzIwLjI1IDE0LjI0MTggMTcuMjI3OSAxNy4yNjM5IDEzLjUgMTcuMjYzOUM5Ljc3MjA4IDE3LjI2MzkgNi43NSAxNC4yNDE4IDYuNzUgMTAuNTEzOVoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==)"></i>
+          <input id="address" type="text" value="Eksempelveien 1, 0000 Eksempelsted" placeholder="Søk etter adresse" autocomplete="street-address" />
+          <button class="icon-btn" id="addressClear" type="button" aria-label="Tøm adresse"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJSZW1vdmUiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTguNzU1NjcgNy42NTA3QzguNDUwNTcgNy4zNDU2IDcuOTU1OTEgNy4zNDU2IDcuNjUwODIgNy42NTA3QzcuMzQ1NzIgNy45NTU3OSA3LjM0NTcyIDguNDUwNDYgNy42NTA4MiA4Ljc1NTU1TDExLjM5NTMgMTIuNUw3LjY1MDcgMTYuMjQ0NkM3LjM0NTYgMTYuNTQ5NyA3LjM0NTYgMTcuMDQ0MyA3LjY1MDcgMTcuMzQ5NEM3Ljk1NTc5IDE3LjY1NDUgOC40NTA0NSAxNy42NTQ1IDguNzU1NTUgMTcuMzQ5NEwxMi41MDAxIDEzLjYwNDlMMTYuMjQ0NiAxNy4zNDkzQzE2LjU0OTcgMTcuNjU0NCAxNy4wNDQzIDE3LjY1NDQgMTcuMzQ5NCAxNy4zNDkzQzE3LjY1NDUgMTcuMDQ0MiAxNy42NTQ1IDE2LjU0OTUgMTcuMzQ5NCAxNi4yNDQ0TDEzLjYwNSAxMi41TDE3LjM0OTMgOC43NTU2N0MxNy42NTQ0IDguNDUwNTcgMTcuNjU0NCA3Ljk1NTkxIDE3LjM0OTMgNy42NTA4MkMxNy4wNDQyIDcuMzQ1NzIgMTYuNTQ5NSA3LjM0NTcyIDE2LjI0NDQgNy42NTA4MkwxMi41MDAxIDExLjM5NTFMOC43NTU2NyA3LjY1MDdaIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==);width:25px;height:25px"></i></button>
+        </div>
+      </div>
 
       <div class="stack">
         <!-- Anbefalt bredbåndspakke -->
@@ -672,8 +756,11 @@
             <div class="fiber-icon"><img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI5LjMxMjUiIGhlaWdodD0iMjguOTI3MSIgdmlld0JveD0iMCAwIDI5LjMxMjUgMjguOTI3MSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgaWQ9Ikljb24iPgo8ZyBpZD0iR3JvdXAgMzM4NjQzOTMxIj4KPHBhdGggaWQ9IlZlY3RvciAoU3Ryb2tlKSIgZD0iTTEwLjA2MjUgMjcuMTc3MUwxMC4wNjI1IDE3LjExNDZDMTAuMDYyNSAxNi43NTIyIDEwLjM1NjMgMTYuNDU4NCAxMC43MTg4IDE2LjQ1ODRDMTEuMDgxMiAxNi40NTg0IDExLjM3NSAxNi43NTIyIDExLjM3NSAxNy4xMTQ2TDExLjM3NSAyNy4xNzcxQzExLjM3NSAyNy41Mzk2IDExLjA4MTIgMjcuODMzNCAxMC43MTg4IDI3LjgzMzRDMTAuMzU2MyAyNy44MzM0IDEwLjA2MjUgMjcuNTM5NiAxMC4wNjI1IDI3LjE3NzFaIiBmaWxsPSIjMDA0M0M3Ii8+CjxwYXRoIGlkPSJWZWN0b3IiIGQ9Ik0xMC43MTg4IDI4LjkyNzFDMTEuNjg1MiAyOC45MjcxIDEyLjQ2ODggMjguMTQzNiAxMi40Njg4IDI3LjE3NzFDMTIuNDY4OCAyNi4yMTA2IDExLjY4NTIgMjUuNDI3MSAxMC43MTg4IDI1LjQyNzFDOS43NTIyNSAyNS40MjcxIDguOTY4NzUgMjYuMjEwNiA4Ljk2ODc1IDI3LjE3NzFDOC45Njg3NSAyOC4xNDM2IDkuNzUyMjUgMjguOTI3MSAxMC43MTg4IDI4LjkyNzFaIiBmaWxsPSIjMDA0M0M3Ii8+CjxwYXRoIGlkPSJWZWN0b3IgKFN0cm9rZSlfMiIgZD0iTTI4LjY1NjIgMjYuNTIwOUMyOS4wMTg3IDI2LjUyMDkgMjkuMzEyNSAyNi44MTQ3IDI5LjMxMjUgMjcuMTc3MUMyOS4zMTI1IDI3LjUzOTYgMjkuMDE4NyAyNy44MzM0IDI4LjY1NjIgMjcuODMzNEwwLjY1NjI1IDI3LjgzMzRDMC4yOTM4MTMgMjcuODMzNCAwIDI3LjUzOTYgMCAyNy4xNzcxQzAgMjYuODE0NyAwLjI5MzgxMyAyNi41MjA5IDAuNjU2MjUgMjYuNTIwOUwyOC42NTYyIDI2LjUyMDlaIiBmaWxsPSIjMDA0M0M3Ii8+CjwvZz4KPHBhdGggaWQ9IlVuaW9uIiBkPSJNMTguNTkzOCAwLjAwMTI4MTc0QzE4LjgxNDEgMC4wMDEyODE3NCAxOS4wMzQ0IDAuMDgzNzE1OCAxOS4yMDQzIDAuMjQ5MDg0TDI2LjY0MTggNy42MTczN0MyNi44MTA5IDcuNzgyMDYgMjYuOTA2MiA4LjAwODEyIDI2LjkwNjIgOC4yNDQxNFYyMy42MjVDMjYuOTA2MiAyNC4xMDgyIDI2LjUxNDUgMjQuNSAyNi4wMzEyIDI0LjVIMTAuNzE4OFYwTDE4LjU5MzggMFYwLjAwMTI4MTc0WiIgZmlsbD0iIzAwQzhGRiIvPgo8cGF0aCBpZD0iVW5pb25fMiIgZD0iTTEwLjEwODIgMC4yNDkxNTZDMTAuNDQ3OSAtMC4wODE2Mjc4IDEwLjk4OTYgLTAuMDgxNjI3OCAxMS4zMjkzIDAuMjQ5MTU2TDE4Ljc2NjggNy42MTc0NEMxOC45MzU5IDcuNzgyMTQgMTkuMDMxMiA4LjAwODE3IDE5LjAzMTIgOC4yNDQyMVYyNC41MDAxSDMuMjgxMjVDMi43OTgwNSAyNC41MDAxIDIuNDA2MzMgMjQuMTA4MyAyLjQwNjI1IDIzLjYyNTFWOC4yNDQyMUMyLjQwNjI1IDguMDA4MTYgMi41MDE2MyA3Ljc4MjE0IDIuNjcwNzIgNy42MTc0NEwxMC4xMDgyIDAuMjQ5MTU2WiIgZmlsbD0iIzAwNDNDNyIvPgo8ZyBpZD0iV2lGaSI+CjxwYXRoIGlkPSJFbGxpcHNlIDQ5NCIgZD0iTTExLjU5MzggMTcuNzcwOUMxMS41OTM4IDE4LjI1NDEgMTEuMjAyIDE4LjY0NTkgMTAuNzE4OCAxOC42NDU5QzEwLjIzNTUgMTguNjQ1OSA5Ljg0Mzc1IDE4LjI1NDEgOS44NDM3NSAxNy43NzA5QzkuODQzNzUgMTcuMjg3NiAxMC4yMzU1IDE2Ljg5NTkgMTAuNzE4OCAxNi44OTU5QzExLjIwMiAxNi44OTU5IDExLjU5MzggMTcuMjg3NiAxMS41OTM4IDE3Ljc3MDlaIiBmaWxsPSIjRUJGRkZGIi8+CjxwYXRoIGlkPSJFbGxpcHNlIDQ5NSAoU3Ryb2tlKSIgZD0iTTEwLjcxODcgMTQuMjcwOUMxMS40ODYyIDE0LjI3MDkgMTIuMjA4NCAxNC41MTIyIDEyLjc1NjcgMTQuOTkxMkMxMi45Mzg3IDE1LjE1MDIgMTIuOTU3MSAxNS40MjY2IDEyLjc5ODIgMTUuNjA4NkMxMi42MzkyIDE1Ljc5MDUgMTIuMzYyNyAxNS44MDk0IDEyLjE4MDggMTUuNjUwNUMxMS44MTMzIDE1LjMyOTQgMTEuMzA0NyAxNS4xNDU5IDEwLjcxODcgMTUuMTQ1OUMxMC4xMzI4IDE1LjE0NTkgOS42MjQyMyAxNS4zMjk0IDkuMjU2NzEgMTUuNjUwNUM5LjA3NDc1IDE1LjgwOTQgOC43OTgzMiAxNS43OTA1IDguNjM5MzQgMTUuNjA4NkM4LjQ4MDQxIDE1LjQyNjYgOC40OTg4NCAxNS4xNTAyIDguNjgwNzkgMTQuOTkxMkM5LjIyOTA3IDE0LjUxMjIgOS45NTEyOSAxNC4yNzA5IDEwLjcxODcgMTQuMjcwOVoiIGZpbGw9IiNFQkZGRkYiLz4KPHBhdGggaWQ9IkVsbGlwc2UgNDk2IChTdHJva2UpIiBkPSJNMTAuNzE4NyAxMS40MjcxQzEyLjA2MTggMTEuNDI3MSAxMy4zMjIzIDExLjk4OSAxNC4yNTIxIDEyLjY0NDNDMTQuNDQ5NSAxMi43ODM1IDE0LjQ5NjcgMTMuMDU2NSAxNC4zNTc2IDEzLjI1NEMxNC4yMTg0IDEzLjQ1MTUgMTMuOTQ1NCAxMy40OTg4IDEzLjc0NzkgMTMuMzU5NkMxMi45MTM2IDEyLjc3MTUgMTEuODI2NiAxMi4zMDIxIDEwLjcxODcgMTIuMzAyMUM5LjYwODg0IDEyLjMwMjEgOC41MjQ0NSAxMi43NzAzIDcuNjg5OTggMTMuMzU5NkM3LjQ5MjYzIDEzLjQ5ODkgNy4yMTk3IDEzLjQ1MTggNy4wODAzIDEzLjI1NDVDNi45NDA5NCAxMy4wNTcxIDYuOTg3NjkgMTIuNzg0MiA3LjE4NDk4IDEyLjY0NDhDOC4xMTU3NiAxMS45ODc1IDkuMzczOTkgMTEuNDI3MSAxMC43MTg3IDExLjQyNzFaIiBmaWxsPSIjRUJGRkZGIi8+CjwvZz4KPC9nPgo8L3N2Zz4K" alt="" /></div>
           </div>
           <div class="card__main">
-            <p class="card__title" id="pkg-title">Anbefalt bredbåndspakke</p>
-            <p class="card__subtitle">Inkluderte produkter: Fiber 500, WiFi Ruter II, T-We boks III, T-We &amp; Streaming og frakt</p>
+            <p class="card__title" id="pkg-title">Produktpakke</p>
+            <div class="chips">
+              <ul class="chips__list" id="pkgChips" aria-label="Produkter i pakken"></ul>
+              <button class="edit-btn" id="pkgEdit" type="button" aria-haspopup="dialog" aria-label="Endre produkter i pakken"><i class="ico ico--action" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJJY29uIE9ubHkiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTE0Ljk5OTYgMS44NzVDMTUuMTY1NCAxLjg3NTAyIDE1LjMyNDMgMS45NDA5MSAxNS40NDE1IDIuMDU4MTFMMTcuOTQxNSA0LjU1ODExTDE3Ljk4MyA0LjYwMzg4QzE4LjA3NDIgNC43MTUxMSAxOC4xMjQ2IDQuODU0OTMgMTguMTI0NiA1QzE4LjEyNDYgNS4xNjU3NiAxOC4wNTg3IDUuMzI0NjkgMTcuOTQxNSA1LjQ0MTg5TDcuMzE2NTMgMTYuMDY2OUM3LjI2NTA2IDE2LjExODQgNy4yMDUxNCAxNi4xNjA3IDcuMTM5NTMgMTYuMTkxNEw3LjA3MjM5IDE2LjIxODNMMy4zMjIzOSAxNy40NjgzQzMuMDk3OTEgMTcuNTQzIDIuODUwMDYgMTcuNDg0MiAyLjY4Mjc1IDE3LjMxNjlDMi41MzY0NyAxNy4xNzA1IDIuNDczNDYgMTYuOTYyNyAyLjUxMDAyIDE2Ljc2MjdMMi41MzE5OSAxNi42NzcyTDMuNzgxOTkgMTIuOTI3OUMzLjgxMjY3IDEyLjgzNTggMy44NjQxMyAxMi43NTE3IDMuOTMyNzUgMTIuNjgzMUwxNC41NTc3IDIuMDU4MTFMMTQuNjAzNSAyLjAxNjZDMTQuNzE0NyAxLjkyNTQ0IDE0Ljg1NDYgMS44NzUgMTQuOTk5NiAxLjg3NVpNNC4xMTI4IDE1Ljg4NjJMNi4zODA4NyAxNS4xMzA2TDQuODY5MDIgMTMuNjE4OEw0LjExMjggMTUuODg2MlpNNS43MDAzMiAxMi42ODI1TDcuMzE2NTMgMTQuMjk4N0wxNi42MTU5IDVMMTQuOTk5NiAzLjM4Mzc5TDUuNzAwMzIgMTIuNjgyNVoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjMTAyMEY5Ii8+CjwvZz4KPC9zdmc+Cg==)"></i></button>
+            </div>
             <div class="inner-card">
               <div class="range" id="range">
                 <div class="range__tip-row">
@@ -697,52 +784,43 @@
               <span class="price-old" id="pkgOld" hidden>1 997,-</span>
               <span class="price-new" id="pkgPrice">1 997,-/md.</span>
             </div>
-            <p class="price-sub" id="pkgDiscount" hidden>-0,-/md rabatt</p>
+            <p class="price-sub" id="pkgDiscount" hidden>Årlig besparelse: 0,-</p>
           </div>
           <div class="trailing" id="pkgSelect">
             <button class="radio" id="pkgRadio" role="radio" aria-checked="true" aria-label="Velg anbefalt bredbåndspakke"></button>
           </div>
         </section>
 
-        <!-- Etablering -->
+        <!-- Etablering og oppkobling -->
         <section class="card" aria-labelledby="est-title">
           <div class="card__main">
-            <p class="card__title" id="est-title">Etablering</p>
-            <div class="select" id="select">
-              <span class="label" id="selectLabel">Velg binding for etablering</span>
-              <button class="select__field" id="selectBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="selectLabel selectValue">
-                <span class="select__value" id="selectValue"></span>
-                <i class="select__chev ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiB2aWV3Qm94PSIwIDAgMjYgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFVwIj4KPHBhdGggaWQ9Ikljb24iIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIuNDc5OSA5LjEyNTgyQzEyLjc4MTIgOC44NzQ3MyAxMy4yMTg5IDguODc0NzMgMTMuNTIwMiA5LjEyNTgyTDIwLjgzMjcgMTUuMjE5NkMyMS4xNzc0IDE1LjUwNjggMjEuMjI0IDE2LjAxOTIgMjAuOTM2NyAxNi4zNjM5QzIwLjY0OTQgMTYuNzA4NiAyMC4xMzcxIDE2Ljc1NTIgMTkuNzkyNCAxNi40Njc5TDEzIDEwLjgwNzZMNi4yMDc2NyAxNi40Njc5QzUuODYyOTUgMTYuNzU1MiA1LjM1MDYxIDE2LjcwODYgNS4wNjMzNCAxNi4zNjM5QzQuNzc2MDcgMTYuMDE5MiA0LjgyMjY1IDE1LjUwNjggNS4xNjczNyAxNS4yMTk2TDEyLjQ3OTkgOS4xMjU4MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L3N2Zz4K)"></i>
-              </button>
-              <ul class="select__panel" id="selectPanel" role="listbox" tabindex="-1" aria-labelledby="selectLabel"></ul>
-            </div>
-          </div>
-          <div class="card__aside card__aside--center">
-            <p class="data-head">Etableringspris</p>
-            <div class="price-row">
-              <span class="price-old" id="estOld">4 995,-</span>
-              <span class="price-new" id="estPrice">1 995,-</span>
-            </div>
-          </div>
-        </section>
-
-        <!-- Oppkoblingsdato -->
-        <section class="card">
-          <div class="card__main">
-            <p class="card__title" id="date-title">Velg ønsket oppkoblingsdato</p>
-            <div class="field" id="dateField">
-              <button class="date-trigger" id="dateBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="date-title dateText">
-                <i class="field__icon ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDYWxlbmRhciI+CjxnIGlkPSJJY29uIj4KPHBhdGggZD0iTTExLjcxODggMTMuMjgxMkMxMS43MTg4IDEzLjcxMjcgMTEuMzY5IDE0LjA2MjUgMTAuOTM3NSAxNC4wNjI1QzEwLjUwNiAxNC4wNjI1IDEwLjE1NjIgMTMuNzEyNyAxMC4xNTYyIDEzLjI4MTJDMTAuMTU2MiAxMi44NDk4IDEwLjUwNiAxMi41IDEwLjkzNzUgMTIuNUMxMS4zNjkgMTIuNSAxMS43MTg4IDEyLjg0OTggMTEuNzE4OCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTAuOTM3NSAxNy45Njg4QzExLjM2OSAxNy45Njg4IDExLjcxODggMTcuNjE5IDExLjcxODggMTcuMTg3NUMxMS43MTg4IDE2Ljc1NiAxMS4zNjkgMTYuNDA2MiAxMC45Mzc1IDE2LjQwNjJDMTAuNTA2IDE2LjQwNjIgMTAuMTU2MiAxNi43NTYgMTAuMTU2MiAxNy4xODc1QzEwLjE1NjIgMTcuNjE5IDEwLjUwNiAxNy45Njg4IDEwLjkzNzUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTguNTkzNzUgMTMuMjgxMkM4LjU5Mzc1IDEzLjcxMjcgOC4yNDM5NyAxNC4wNjI1IDcuODEyNSAxNC4wNjI1QzcuMzgxMDMgMTQuMDYyNSA3LjAzMTI1IDEzLjcxMjcgNy4wMzEyNSAxMy4yODEyQzcuMDMxMjUgMTIuODQ5OCA3LjM4MTAzIDEyLjUgNy44MTI1IDEyLjVDOC4yNDM5NyAxMi41IDguNTkzNzUgMTIuODQ5OCA4LjU5Mzc1IDEzLjI4MTJaIiBmaWxsPSIjNEY1QjdEIi8+CjxwYXRoIGQ9Ik03LjgxMjUgMTcuOTY4OEM4LjI0Mzk3IDE3Ljk2ODggOC41OTM3NSAxNy42MTkgOC41OTM3NSAxNy4xODc1QzguNTkzNzUgMTYuNzU2IDguMjQzOTcgMTYuNDA2MiA3LjgxMjUgMTYuNDA2MkM3LjM4MTAzIDE2LjQwNjIgNy4wMzEyNSAxNi43NTYgNy4wMzEyNSAxNy4xODc1QzcuMDMxMjUgMTcuNjE5IDcuMzgxMDMgMTcuOTY4OCA3LjgxMjUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTE0Ljg0MzggMTMuMjgxMkMxNC44NDM4IDEzLjcxMjcgMTQuNDk0IDE0LjA2MjUgMTQuMDYyNSAxNC4wNjI1QzEzLjYzMSAxNC4wNjI1IDEzLjI4MTIgMTMuNzEyNyAxMy4yODEyIDEzLjI4MTJDMTMuMjgxMiAxMi44NDk4IDEzLjYzMSAxMi41IDE0LjA2MjUgMTIuNUMxNC40OTQgMTIuNSAxNC44NDM4IDEyLjg0OTggMTQuODQzOCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTQuMDYyNSAxNy45Njg4QzE0LjQ5NCAxNy45Njg4IDE0Ljg0MzggMTcuNjE5IDE0Ljg0MzggMTcuMTg3NUMxNC44NDM4IDE2Ljc1NiAxNC40OTQgMTYuNDA2MiAxNC4wNjI1IDE2LjQwNjJDMTMuNjMxIDE2LjQwNjIgMTMuMjgxMiAxNi43NTYgMTMuMjgxMiAxNy4xODc1QzEzLjI4MTIgMTcuNjE5IDEzLjYzMSAxNy45Njg4IDE0LjA2MjUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTE3Ljk2ODggMTMuMjgxMkMxNy45Njg4IDEzLjcxMjcgMTcuNjE5IDE0LjA2MjUgMTcuMTg3NSAxNC4wNjI1QzE2Ljc1NiAxNC4wNjI1IDE2LjQwNjIgMTMuNzEyNyAxNi40MDYyIDEzLjI4MTJDMTYuNDA2MiAxMi44NDk4IDE2Ljc1NiAxMi41IDE3LjE4NzUgMTIuNUMxNy42MTkgMTIuNSAxNy45Njg4IDEyLjg0OTggMTcuOTY4OCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTcuMTg3NSAxNy45Njg4QzE3LjYxOSAxNy45Njg4IDE3Ljk2ODggMTcuNjE5IDE3Ljk2ODggMTcuMTg3NUMxNy45Njg4IDE2Ljc1NiAxNy42MTkgMTYuNDA2MiAxNy4xODc1IDE2LjQwNjJDMTYuNzU2IDE2LjQwNjIgMTYuNDA2MiAxNi43NTYgMTYuNDA2MiAxNy4xODc1QzE2LjQwNjIgMTcuNjE5IDE2Ljc1NiAxNy45Njg4IDE3LjE4NzUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNS42MjUgNC42ODc1SDkuMzc1VjMuOTA2MjVDOS4zNzUgMy40NzQ3OCA5LjAyNTIyIDMuMTI1IDguNTkzNzUgMy4xMjVDOC4xNjIyOCAzLjEyNSA3LjgxMjUgMy40NzQ3OCA3LjgxMjUgMy45MDYyNVY0LjY4NzVIMy45MDYyNUMzLjQ3NDc4IDQuNjg3NSAzLjEyNSA1LjAzNzI4IDMuMTI1IDUuNDY4NzVWMjEuMDkzOEMzLjEyNSAyMS41MjUyIDMuNDc0NzggMjEuODc1IDMuOTA2MjUgMjEuODc1SDIxLjA5MzhDMjEuNTI1MiAyMS44NzUgMjEuODc1IDIxLjUyNTIgMjEuODc1IDIxLjA5MzhWNS40Njg3NUMyMS44NzUgNS4wMzcyOCAyMS41MjUyIDQuNjg3NSAyMS4wOTM4IDQuNjg3NUgxNy4xODc1VjMuOTA2MjVDMTcuMTg3NSAzLjQ3NDc4IDE2LjgzNzcgMy4xMjUgMTYuNDA2MiAzLjEyNUMxNS45NzQ4IDMuMTI1IDE1LjYyNSAzLjQ3NDc4IDE1LjYyNSAzLjkwNjI1VjQuNjg3NVpNOC41OTM3NSA3LjgxMjVDOC4xNjIyOCA3LjgxMjUgNy44MTI1IDcuNDYyNzIgNy44MTI1IDcuMDMxMjVWNi4yNUg0LjY4NzVWOC41OTM3NUwyMC4zMTI1IDguNTkzNzVWNi4yNUgxNy4xODc1VjcuMDMxMjVDMTcuMTg3NSA3LjQ2MjcyIDE2LjgzNzcgNy44MTI1IDE2LjQwNjIgNy44MTI1QzE1Ljk3NDggNy44MTI1IDE1LjYyNSA3LjQ2MjcyIDE1LjYyNSA3LjAzMTI1VjYuMjVIOS4zNzVWNy4wMzEyNUM5LjM3NSA3LjQ2MjcyIDkuMDI1MjIgNy44MTI1IDguNTkzNzUgNy44MTI1Wk00LjY4NzUgMTAuMTU2MlYyMC4zMTI1SDIwLjMxMjVWMTAuMTU2Mkw0LjY4NzUgMTAuMTU2MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L2c+Cjwvc3ZnPgo=)"></i>
-                <span id="dateText">08.12.2026</span>
-              </button>
-              <button class="icon-btn" id="dateClear" type="button" aria-label="Fjern dato"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJSZW1vdmUiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTguNzU1NjcgNy42NTA3QzguNDUwNTcgNy4zNDU2IDcuOTU1OTEgNy4zNDU2IDcuNjUwODIgNy42NTA3QzcuMzQ1NzIgNy45NTU3OSA3LjM0NTcyIDguNDUwNDYgNy42NTA4MiA4Ljc1NTU1TDExLjM5NTMgMTIuNUw3LjY1MDcgMTYuMjQ0NkM3LjM0NTYgMTYuNTQ5NyA3LjM0NTYgMTcuMDQ0MyA3LjY1MDcgMTcuMzQ5NEM3Ljk1NTc5IDE3LjY1NDUgOC40NTA0NSAxNy42NTQ1IDguNzU1NTUgMTcuMzQ5NEwxMi41MDAxIDEzLjYwNDlMMTYuMjQ0NiAxNy4zNDkzQzE2LjU0OTcgMTcuNjU0NCAxNy4wNDQzIDE3LjY1NDQgMTcuMzQ5NCAxNy4zNDkzQzE3LjY1NDUgMTcuMDQ0MiAxNy42NTQ1IDE2LjU0OTUgMTcuMzQ5NCAxNi4yNDQ0TDEzLjYwNSAxMi41TDE3LjM0OTMgOC43NTU2N0MxNy42NTQ0IDguNDUwNTcgMTcuNjU0NCA3Ljk1NTkxIDE3LjM0OTMgNy42NTA4MkMxNy4wNDQyIDcuMzQ1NzIgMTYuNTQ5NSA3LjM0NTcyIDE2LjI0NDQgNy42NTA4MkwxMi41MDAxIDExLjM5NTFMOC43NTU2NyA3LjY1MDdaIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==);width:25px;height:25px"></i></button>
-              <div class="calendar" id="calendar" role="dialog" aria-label="Velg dato">
-                <div class="cal__head">
-                  <button class="cal__nav cal__nav--prev" id="calPrev" type="button" aria-label="Forrige måned"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiB2aWV3Qm94PSIwIDAgMjYgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFVwIj4KPHBhdGggaWQ9Ikljb24iIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIuNDc5OSA5LjEyNTgyQzEyLjc4MTIgOC44NzQ3MyAxMy4yMTg5IDguODc0NzMgMTMuNTIwMiA5LjEyNTgyTDIwLjgzMjcgMTUuMjE5NkMyMS4xNzc0IDE1LjUwNjggMjEuMjI0IDE2LjAxOTIgMjAuOTM2NyAxNi4zNjM5QzIwLjY0OTQgMTYuNzA4NiAyMC4xMzcxIDE2Ljc1NTIgMTkuNzkyNCAxNi40Njc5TDEzIDEwLjgwNzZMNi4yMDc2NyAxNi40Njc5QzUuODYyOTUgMTYuNzU1MiA1LjM1MDYxIDE2LjcwODYgNS4wNjMzNCAxNi4zNjM5QzQuNzc2MDcgMTYuMDE5MiA0LjgyMjY1IDE1LjUwNjggNS4xNjczNyAxNS4yMTk2TDEyLjQ3OTkgOS4xMjU4MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L3N2Zz4K)"></i></button>
-                  <span class="cal__month" id="calMonth" aria-live="polite"></span>
-                  <button class="cal__nav cal__nav--next" id="calNext" type="button" aria-label="Neste måned"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiB2aWV3Qm94PSIwIDAgMjYgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFVwIj4KPHBhdGggaWQ9Ikljb24iIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIuNDc5OSA5LjEyNTgyQzEyLjc4MTIgOC44NzQ3MyAxMy4yMTg5IDguODc0NzMgMTMuNTIwMiA5LjEyNTgyTDIwLjgzMjcgMTUuMjE5NkMyMS4xNzc0IDE1LjUwNjggMjEuMjI0IDE2LjAxOTIgMjAuOTM2NyAxNi4zNjM5QzIwLjY0OTQgMTYuNzA4NiAyMC4xMzcxIDE2Ljc1NTIgMTkuNzkyNCAxNi40Njc5TDEzIDEwLjgwNzZMNi4yMDc2NyAxNi40Njc5QzUuODYyOTUgMTYuNzU1MiA1LjM1MDYxIDE2LjcwODYgNS4wNjMzNCAxNi4zNjM5QzQuNzc2MDcgMTYuMDE5MiA0LjgyMjY1IDE1LjUwNjggNS4xNjczNyAxNS4yMTk2TDEyLjQ3OTkgOS4xMjU4MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L3N2Zz4K)"></i></button>
+            <p class="card__title" id="est-title">Etablering og oppkobling</p>
+            <div class="field-cols">
+              <div class="select" id="select">
+                <span class="label" id="selectLabel">Velg bindingstid</span>
+                <button class="select__field" id="selectBtn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="selectLabel selectValue">
+                  <span class="select__value" id="selectValue"></span>
+                  <i class="select__chev ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiB2aWV3Qm94PSIwIDAgMjYgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFVwIj4KPHBhdGggaWQ9Ikljb24iIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIuNDc5OSA5LjEyNTgyQzEyLjc4MTIgOC44NzQ3MyAxMy4yMTg5IDguODc0NzMgMTMuNTIwMiA5LjEyNTgyTDIwLjgzMjcgMTUuMjE5NkMyMS4xNzc0IDE1LjUwNjggMjEuMjI0IDE2LjAxOTIgMjAuOTM2NyAxNi4zNjM5QzIwLjY0OTQgMTYuNzA4NiAyMC4xMzcxIDE2Ljc1NTIgMTkuNzkyNCAxNi40Njc5TDEzIDEwLjgwNzZMNi4yMDc2NyAxNi40Njc5QzUuODYyOTUgMTYuNzU1MiA1LjM1MDYxIDE2LjcwODYgNS4wNjMzNCAxNi4zNjM5QzQuNzc2MDcgMTYuMDE5MiA0LjgyMjY1IDE1LjUwNjggNS4xNjczNyAxNS4yMTk2TDEyLjQ3OTkgOS4xMjU4MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L3N2Zz4K)"></i>
+                </button>
+                <ul class="select__panel" id="selectPanel" role="listbox" tabindex="-1" aria-labelledby="selectLabel"></ul>
+              </div>
+              <div class="field-group">
+                <span class="label" id="date-title">Ønsket oppkoblingsdato</span>
+                <div class="field" id="dateField">
+                  <button class="date-trigger" id="dateBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="date-title dateText">
+                    <i class="field__icon ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDYWxlbmRhciI+CjxnIGlkPSJJY29uIj4KPHBhdGggZD0iTTExLjcxODggMTMuMjgxMkMxMS43MTg4IDEzLjcxMjcgMTEuMzY5IDE0LjA2MjUgMTAuOTM3NSAxNC4wNjI1QzEwLjUwNiAxNC4wNjI1IDEwLjE1NjIgMTMuNzEyNyAxMC4xNTYyIDEzLjI4MTJDMTAuMTU2MiAxMi44NDk4IDEwLjUwNiAxMi41IDEwLjkzNzUgMTIuNUMxMS4zNjkgMTIuNSAxMS43MTg4IDEyLjg0OTggMTEuNzE4OCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTAuOTM3NSAxNy45Njg4QzExLjM2OSAxNy45Njg4IDExLjcxODggMTcuNjE5IDExLjcxODggMTcuMTg3NUMxMS43MTg4IDE2Ljc1NiAxMS4zNjkgMTYuNDA2MiAxMC45Mzc1IDE2LjQwNjJDMTAuNTA2IDE2LjQwNjIgMTAuMTU2MiAxNi43NTYgMTAuMTU2MiAxNy4xODc1QzEwLjE1NjIgMTcuNjE5IDEwLjUwNiAxNy45Njg4IDEwLjkzNzUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTguNTkzNzUgMTMuMjgxMkM4LjU5Mzc1IDEzLjcxMjcgOC4yNDM5NyAxNC4wNjI1IDcuODEyNSAxNC4wNjI1QzcuMzgxMDMgMTQuMDYyNSA3LjAzMTI1IDEzLjcxMjcgNy4wMzEyNSAxMy4yODEyQzcuMDMxMjUgMTIuODQ5OCA3LjM4MTAzIDEyLjUgNy44MTI1IDEyLjVDOC4yNDM5NyAxMi41IDguNTkzNzUgMTIuODQ5OCA4LjU5Mzc1IDEzLjI4MTJaIiBmaWxsPSIjNEY1QjdEIi8+CjxwYXRoIGQ9Ik03LjgxMjUgMTcuOTY4OEM4LjI0Mzk3IDE3Ljk2ODggOC41OTM3NSAxNy42MTkgOC41OTM3NSAxNy4xODc1QzguNTkzNzUgMTYuNzU2IDguMjQzOTcgMTYuNDA2MiA3LjgxMjUgMTYuNDA2MkM3LjM4MTAzIDE2LjQwNjIgNy4wMzEyNSAxNi43NTYgNy4wMzEyNSAxNy4xODc1QzcuMDMxMjUgMTcuNjE5IDcuMzgxMDMgMTcuOTY4OCA3LjgxMjUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTE0Ljg0MzggMTMuMjgxMkMxNC44NDM4IDEzLjcxMjcgMTQuNDk0IDE0LjA2MjUgMTQuMDYyNSAxNC4wNjI1QzEzLjYzMSAxNC4wNjI1IDEzLjI4MTIgMTMuNzEyNyAxMy4yODEyIDEzLjI4MTJDMTMuMjgxMiAxMi44NDk4IDEzLjYzMSAxMi41IDE0LjA2MjUgMTIuNUMxNC40OTQgMTIuNSAxNC44NDM4IDEyLjg0OTggMTQuODQzOCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTQuMDYyNSAxNy45Njg4QzE0LjQ5NCAxNy45Njg4IDE0Ljg0MzggMTcuNjE5IDE0Ljg0MzggMTcuMTg3NUMxNC44NDM4IDE2Ljc1NiAxNC40OTQgMTYuNDA2MiAxNC4wNjI1IDE2LjQwNjJDMTMuNjMxIDE2LjQwNjIgMTMuMjgxMiAxNi43NTYgMTMuMjgxMiAxNy4xODc1QzEzLjI4MTIgMTcuNjE5IDEzLjYzMSAxNy45Njg4IDE0LjA2MjUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTE3Ljk2ODggMTMuMjgxMkMxNy45Njg4IDEzLjcxMjcgMTcuNjE5IDE0LjA2MjUgMTcuMTg3NSAxNC4wNjI1QzE2Ljc1NiAxNC4wNjI1IDE2LjQwNjIgMTMuNzEyNyAxNi40MDYyIDEzLjI4MTJDMTYuNDA2MiAxMi44NDk4IDE2Ljc1NiAxMi41IDE3LjE4NzUgMTIuNUMxNy42MTkgMTIuNSAxNy45Njg4IDEyLjg0OTggMTcuOTY4OCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTcuMTg3NSAxNy45Njg4QzE3LjYxOSAxNy45Njg4IDE3Ljk2ODggMTcuNjE5IDE3Ljk2ODggMTcuMTg3NUMxNy45Njg4IDE2Ljc1NiAxNy42MTkgMTYuNDA2MiAxNy4xODc1IDE2LjQwNjJDMTYuNzU2IDE2LjQwNjIgMTYuNDA2MiAxNi43NTYgMTYuNDA2MiAxNy4xODc1QzE2LjQwNjIgMTcuNjE5IDE2Ljc1NiAxNy45Njg4IDE3LjE4NzUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNS42MjUgNC42ODc1SDkuMzc1VjMuOTA2MjVDOS4zNzUgMy40NzQ3OCA5LjAyNTIyIDMuMTI1IDguNTkzNzUgMy4xMjVDOC4xNjIyOCAzLjEyNSA3LjgxMjUgMy40NzQ3OCA3LjgxMjUgMy45MDYyNVY0LjY4NzVIMy45MDYyNUMzLjQ3NDc4IDQuNjg3NSAzLjEyNSA1LjAzNzI4IDMuMTI1IDUuNDY4NzVWMjEuMDkzOEMzLjEyNSAyMS41MjUyIDMuNDc0NzggMjEuODc1IDMuOTA2MjUgMjEuODc1SDIxLjA5MzhDMjEuNTI1MiAyMS44NzUgMjEuODc1IDIxLjUyNTIgMjEuODc1IDIxLjA5MzhWNS40Njg3NUMyMS44NzUgNS4wMzcyOCAyMS41MjUyIDQuNjg3NSAyMS4wOTM4IDQuNjg3NUgxNy4xODc1VjMuOTA2MjVDMTcuMTg3NSAzLjQ3NDc4IDE2LjgzNzcgMy4xMjUgMTYuNDA2MiAzLjEyNUMxNS45NzQ4IDMuMTI1IDE1LjYyNSAzLjQ3NDc4IDE1LjYyNSAzLjkwNjI1VjQuNjg3NVpNOC41OTM3NSA3LjgxMjVDOC4xNjIyOCA3LjgxMjUgNy44MTI1IDcuNDYyNzIgNy44MTI1IDcuMDMxMjVWNi4yNUg0LjY4NzVWOC41OTM3NUwyMC4zMTI1IDguNTkzNzVWNi4yNUgxNy4xODc1VjcuMDMxMjVDMTcuMTg3NSA3LjQ2MjcyIDE2LjgzNzcgNy44MTI1IDE2LjQwNjIgNy44MTI1QzE1Ljk3NDggNy44MTI1IDE1LjYyNSA3LjQ2MjcyIDE1LjYyNSA3LjAzMTI1VjYuMjVIOS4zNzVWNy4wMzEyNUM5LjM3NSA3LjQ2MjcyIDkuMDI1MjIgNy44MTI1IDguNTkzNzUgNy44MTI1Wk00LjY4NzUgMTAuMTU2MlYyMC4zMTI1SDIwLjMxMjVWMTAuMTU2Mkw0LjY4NzUgMTAuMTU2MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L2c+Cjwvc3ZnPgo=)"></i>
+                    <span id="dateText">08.12.2026</span>
+                  </button>
+                  <button class="icon-btn" id="dateClear" type="button" aria-label="Fjern dato"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJSZW1vdmUiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTguNzU1NjcgNy42NTA3QzguNDUwNTcgNy4zNDU2IDcuOTU1OTEgNy4zNDU2IDcuNjUwODIgNy42NTA3QzcuMzQ1NzIgNy45NTU3OSA3LjM0NTcyIDguNDUwNDYgNy42NTA4MiA4Ljc1NTU1TDExLjM5NTMgMTIuNUw3LjY1MDcgMTYuMjQ0NkM3LjM0NTYgMTYuNTQ5NyA3LjM0NTYgMTcuMDQ0MyA3LjY1MDcgMTcuMzQ5NEM3Ljk1NTc5IDE3LjY1NDUgOC40NTA0NSAxNy42NTQ1IDguNzU1NTUgMTcuMzQ5NEwxMi41MDAxIDEzLjYwNDlMMTYuMjQ0NiAxNy4zNDkzQzE2LjU0OTcgMTcuNjU0NCAxNy4wNDQzIDE3LjY1NDQgMTcuMzQ5NCAxNy4zNDkzQzE3LjY1NDUgMTcuMDQ0MiAxNy42NTQ1IDE2LjU0OTUgMTcuMzQ5NCAxNi4yNDQ0TDEzLjYwNSAxMi41TDE3LjM0OTMgOC43NTU2N0MxNy42NTQ0IDguNDUwNTcgMTcuNjU0NCA3Ljk1NTkxIDE3LjM0OTMgNy42NTA4MkMxNy4wNDQyIDcuMzQ1NzIgMTYuNTQ5NSA3LjM0NTcyIDE2LjI0NDQgNy42NTA4MkwxMi41MDAxIDExLjM5NTFMOC43NTU2NyA3LjY1MDdaIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==);width:25px;height:25px"></i></button>
+                  <div class="calendar" id="calendar" role="dialog" aria-label="Velg dato">
+                    <div class="cal__head">
+                      <button class="cal__nav cal__nav--prev" id="calPrev" type="button" aria-label="Forrige måned"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiB2aWV3Qm94PSIwIDAgMjYgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFVwIj4KPHBhdGggaWQ9Ikljb24iIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIuNDc5OSA5LjEyNTgyQzEyLjc4MTIgOC44NzQ3MyAxMy4yMTg5IDguODc0NzMgMTMuNTIwMiA5LjEyNTgyTDIwLjgzMjcgMTUuMjE5NkMyMS4xNzc0IDE1LjUwNjggMjEuMjI0IDE2LjAxOTIgMjAuOTM2NyAxNi4zNjM5QzIwLjY0OTQgMTYuNzA4NiAyMC4xMzcxIDE2Ljc1NTIgMTkuNzkyNCAxNi40Njc5TDEzIDEwLjgwNzZMNi4yMDc2NyAxNi40Njc5QzUuODYyOTUgMTYuNzU1MiA1LjM1MDYxIDE2LjcwODYgNS4wNjMzNCAxNi4zNjM5QzQuNzc2MDcgMTYuMDE5MiA0LjgyMjY1IDE1LjUwNjggNS4xNjczNyAxNS4yMTk2TDEyLjQ3OTkgOS4xMjU4MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L3N2Zz4K)"></i></button>
+                      <span class="cal__month" id="calMonth" aria-live="polite"></span>
+                      <button class="cal__nav cal__nav--next" id="calNext" type="button" aria-label="Neste måned"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI2IiBoZWlnaHQ9IjI2IiB2aWV3Qm94PSIwIDAgMjYgMjYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDaGV2cm9uIFVwIj4KPHBhdGggaWQ9Ikljb24iIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTIuNDc5OSA5LjEyNTgyQzEyLjc4MTIgOC44NzQ3MyAxMy4yMTg5IDguODc0NzMgMTMuNTIwMiA5LjEyNTgyTDIwLjgzMjcgMTUuMjE5NkMyMS4xNzc0IDE1LjUwNjggMjEuMjI0IDE2LjAxOTIgMjAuOTM2NyAxNi4zNjM5QzIwLjY0OTQgMTYuNzA4NiAyMC4xMzcxIDE2Ljc1NTIgMTkuNzkyNCAxNi40Njc5TDEzIDEwLjgwNzZMNi4yMDc2NyAxNi40Njc5QzUuODYyOTUgMTYuNzU1MiA1LjM1MDYxIDE2LjcwODYgNS4wNjMzNCAxNi4zNjM5QzQuNzc2MDcgMTYuMDE5MiA0LjgyMjY1IDE1LjUwNjggNS4xNjczNyAxNS4yMTk2TDEyLjQ3OTkgOS4xMjU4MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L3N2Zz4K)"></i></button>
+                    </div>
+                    <div class="cal__grid" id="calGrid"></div>
+                  </div>
                 </div>
-                <div class="cal__grid" id="calGrid"></div>
               </div>
             </div>
           </div>
@@ -751,7 +829,7 @@
         <!-- Kontaktinformasjon -->
         <section class="card">
           <div class="card__main">
-            <p class="card__title">Bekreft kontaktinformasjonen til kunde</p>
+            <p class="card__title">Bekreft kundens kontaktinformasjon</p>
             <div class="field-cols">
               <div class="field-group">
                 <label class="label" for="phone">Telefonnummer</label>
@@ -771,7 +849,7 @@
                 <label class="checkbox">
                   <input type="checkbox" id="noEmail" />
                   <span class="checkbox__box" aria-hidden="true"></span>
-                  <span>Kunde har bekreftet å ikke ha e-postadresse</span>
+                  <span>Kunden har bekreftet: ingen e-postadresse</span>
                 </label>
               </div>
             </div>
@@ -781,7 +859,7 @@
         <!-- Flow footer -->
         <div class="flow-footer">
           <div class="summary">
-            <p class="summary__title">Foreløpig total</p>
+            <p class="summary__title">Foreløpig totalpris</p>
             <div class="summary__data">
               <div class="summary__item">
                 <p class="summary__head">Engangspris</p>
@@ -797,7 +875,7 @@
             </div>
           </div>
           <div class="actions">
-            <button class="btn btn--secondary" type="button" data-nav="oversikt">Tilbake til oversikt</button>
+            <button class="btn btn--secondary" type="button" data-nav="oversikt">Tilbake til oversikten</button>
             <button class="btn btn--primary" type="button">Gå til handlekurv <i class="ico" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJJY29uIFJpZ2h0Ij4KPHBhdGggaWQ9Ikljb24iIGQ9Ik0xMi44NzQ5IDQuNzYzNkMxMi41MjM0IDQuNDEyMTMgMTEuOTUzNiA0LjQxMjEzIDExLjYwMjEgNC43NjM2QzExLjI1MDYgNS4xMTUwOCAxMS4yNTA2IDUuNjg0OTIgMTEuNjAyMSA2LjAzNjRMMTYuNjY1NyAxMS4xSDQuNjVDNC4xNTI5NCAxMS4xIDMuNzUgMTEuNTAzIDMuNzUgMTJDMy43NSAxMi40OTcxIDQuMTUyOTQgMTIuOSA0LjY1IDEyLjlIMTYuNjY1N0wxMS42MDIxIDE3Ljk2MzZDMTEuMjUwNiAxOC4zMTUxIDExLjI1MDYgMTguODg0OSAxMS42MDIxIDE5LjIzNjRDMTEuOTUzNiAxOS41ODc5IDEyLjUyMzQgMTkuNTg3OSAxMi44NzQ5IDE5LjIzNjRMMTkuNDc0OSAxMi42MzY0QzE5LjgyNjMgMTIuMjg0OSAxOS44MjYzIDExLjcxNTEgMTkuNDc0OSAxMS4zNjM2TDEyLjg3NDkgNC43NjM2WiIgZmlsbD0iI0Y1RkZGRiIvPgo8L2c+Cjwvc3ZnPgo=);--c:var(--text-inverted)"></i></button>
           </div>
         </div>
@@ -806,6 +884,39 @@
   </div>
 </div>
 
+<!-- Modal: Endre produkter i pakken -->
+<dialog class="modal" id="pkgModal" aria-labelledby="pkgModalTitle">
+  <form method="dialog" id="pkgForm">
+    <div class="modal__head">
+      <h2 class="modal__title" id="pkgModalTitle">Endre produkter i pakken</h2>
+      <button class="modal__close" type="button" value="cancel" data-close aria-label="Lukk"><i class="ico ico--action" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJSZW1vdmUiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTguNzU1NjcgNy42NTA3QzguNDUwNTcgNy4zNDU2IDcuOTU1OTEgNy4zNDU2IDcuNjUwODIgNy42NTA3QzcuMzQ1NzIgNy45NTU3OSA3LjM0NTcyIDguNDUwNDYgNy42NTA4MiA4Ljc1NTU1TDExLjM5NTMgMTIuNUw3LjY1MDcgMTYuMjQ0NkM3LjM0NTYgMTYuNTQ5NyA3LjM0NTYgMTcuMDQ0MyA3LjY1MDcgMTcuMzQ5NEM3Ljk1NTc5IDE3LjY1NDUgOC40NTA0NSAxNy42NTQ1IDguNzU1NTUgMTcuMzQ5NEwxMi41MDAxIDEzLjYwNDlMMTYuMjQ0NiAxNy4zNDkzQzE2LjU0OTcgMTcuNjU0NCAxNy4wNDQzIDE3LjY1NDQgMTcuMzQ5NCAxNy4zNDkzQzE3LjY1NDUgMTcuMDQ0MiAxNy42NTQ1IDE2LjU0OTUgMTcuMzQ5NCAxNi4yNDQ0TDEzLjYwNSAxMi41TDE3LjM0OTMgOC43NTU2N0MxNy42NTQ0IDguNDUwNTcgMTcuNjU0NCA3Ljk1NTkxIDE3LjM0OTMgNy42NTA4MkMxNy4wNDQyIDcuMzQ1NzIgMTYuNTQ5NSA3LjM0NTcyIDE2LjI0NDQgNy42NTA4MkwxMi41MDAxIDExLjM5NTFMOC43NTU2NyA3LjY1MDdaIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==)"></i></button>
+    </div>
+    <div class="modal__body">
+      <div class="mgroups">
+        <fieldset class="mgroup">
+          <legend class="mgroup__title">Bredbånd</legend>
+          <p class="mgroup__rule">Velg ett alternativ</p>
+          <div id="optSpeed"></div>
+        </fieldset>
+        <fieldset class="mgroup">
+          <legend class="mgroup__title">TV og strømming</legend>
+          <p class="mgroup__rule">Velg ett alternativ</p>
+          <div id="optTv"></div>
+        </fieldset>
+      </div>
+      <fieldset class="mgroup">
+        <legend class="mgroup__title">Tillegg og utstyr</legend>
+        <p class="mgroup__rule">Velg uavhengig av hverandre</p>
+        <div id="optExtras"></div>
+      </fieldset>
+      <p class="modal__note">WiFi Ruter II og T-We Boks III er inkludert med alle TV- og bredbåndsprodukter.</p>
+    </div>
+    <div class="modal__actions">
+      <button class="mbtn mbtn--secondary" type="button" data-close>Avbryt</button>
+      <button class="mbtn mbtn--primary" type="submit" value="save">Lagre pakkevalg</button>
+    </div>
+  </form>
+</dialog>
 
 <!-- Prototype control (not part of the design) -->
 <div class="anim-ctl" id="animCtl" role="group" aria-label="Animasjon på anbefalingsstripe">
@@ -830,19 +941,42 @@
 </button>
 <script>
 (() => {
-  const PACKAGE_PRICE = 1997;
   const ESTABLISHMENT_PRICE = 4995;
   const STEP = 50, MAX_DISCOUNT = 800;
   const OPTIONS = [
-    { id: "b3000", label: "-3 000,- rabatt 12 md. binding", discount: 3000 },
-    { id: "b4995", label: "-4 995,- rabatt 12 md. binding", discount: 4995 },
+    { id: "b3000", label: "3 000,- i rabatt ved 12 md. binding", discount: 3000 },
+    { id: "b4995", label: "4 995,- i rabatt ved 12 md. binding", discount: 4995 },
     { id: "none",  label: "Ingen binding", discount: 0 },
   ];
 
-  const state = { discount: 0, selected: true, option: OPTIONS[0], date: new Date(2026, 11, 8) };
+  // Package builder (placeholder prices per month)
+  const SPEEDS = [
+    { id: "f150", label: "Fiber 150", price: 749 },
+    { id: "f500", label: "Fiber 500", price: 949 },
+    { id: "f1000", label: "Fiber 1000", price: 1149 },
+  ];
+  const TVS = [
+    { id: "stream", label: "T-We & Streaming", price: 1048 },
+    { id: "classic", label: "T-We Classic", price: 549 },
+    { id: "none", label: "Ingen TV pakke", price: 0 },
+  ];
+  const EXTRAS = [
+    { id: "streamix", label: "Streamix", price: 299 },
+    { id: "sikre", label: "Sikre", price: 99 },
+    { id: "router", label: "WiFi Ruter II", price: 0 },
+    { id: "box", label: "T-We Boks III", price: 0, needsTv: true },
+  ];
+
+  const state = {
+    discount: 0, selected: true, option: OPTIONS[0], date: new Date(2026, 11, 8),
+    pkg: { speed: "f500", tv: "stream", extras: ["router", "box"] },
+  };
 
   const $ = (id) => document.getElementById(id);
   const kr = (n) => n.toLocaleString("nb-NO").replace(/\u00a0/g, " ") + ",-";
+  const byId = (list, id) => list.find((o) => o.id === id);
+  const packagePrice = (p) => byId(SPEEDS, p.speed).price + byId(TVS, p.tv).price
+    + p.extras.reduce((s, id) => s + byId(EXTRAS, id).price, 0);
 
   let ready = false;
   function setText(el, text) {
@@ -855,20 +989,86 @@
   // ---------- Pricing ----------
   function render() {
     const d = state.discount;
-    const monthly = PACKAGE_PRICE - d;
+    const base = packagePrice(state.pkg);
+    const monthly = Math.max(0, base - d);
     $("tipText").textContent = (d ? "-" : "") + kr(d) + "/md.";
+    $("pkgOld").textContent = kr(base);
     $("pkgPrice").textContent = kr(monthly) + "/md.";
     $("pkgOld").hidden = d === 0;
     $("pkgDiscount").hidden = d === 0;
-    $("pkgDiscount").textContent = "-" + kr(d) + "/md rabatt";
+    $("pkgDiscount").textContent = "Årlig besparelse: " + kr((base - monthly) * 12);
 
     const est = ESTABLISHMENT_PRICE - state.option.discount;
-    $("estPrice").textContent = kr(est);
-    $("estOld").hidden = state.option.discount === 0;
 
     setText($("totalMonthly"), kr(state.selected ? monthly : 0));
     setText($("totalOnce"), kr(state.selected ? est : 0));
   }
+
+  // ---------- Product chips ----------
+  function renderChips(prev) {
+    const p = state.pkg;
+    const items = [byId(SPEEDS, p.speed).label];
+    if (p.tv !== "none") items.push(byId(TVS, p.tv).label);
+    EXTRAS.forEach((x) => { if (p.extras.includes(x.id)) items.push(x.label); });
+    items.push("Frakt");
+    const ul = $("pkgChips"); ul.innerHTML = "";
+    items.forEach((t) => {
+      const li = document.createElement("li");
+      li.className = "chip" + (prev && !prev.includes(t) ? " is-new" : "");
+      li.textContent = t; ul.appendChild(li);
+    });
+  }
+
+  // ---------- Package modal ----------
+  const modal = $("pkgModal"), form = $("pkgForm");
+  const choice = (type, name, o, checked) =>
+    `<label class="checkbox choice"><input type="${type}" name="${name}" value="${o.id}"${checked ? " checked" : ""} />` +
+    `<span class="${type === "radio" ? "radio-box" : "checkbox__box"}" aria-hidden="true"></span><span>${o.label.replace(/&/g, "&amp;")}</span></label>`;
+  function fillModal() {
+    const p = state.pkg;
+    $("optSpeed").innerHTML = SPEEDS.map((o) => choice("radio", "speed", o, o.id === p.speed)).join("");
+    $("optTv").innerHTML = TVS.map((o) => choice("radio", "tv", o, o.id === p.tv)).join("");
+    $("optExtras").innerHTML = EXTRAS.map((o) => choice("checkbox", "extras", o, p.extras.includes(o.id))).join("");
+    syncTvDependency();
+  }
+  // T-We Boks III requires a TV package
+  function syncTvDependency() {
+    const noTv = form.elements.tv.value === "none";
+    const box = form.querySelector('input[value="box"]');
+    const wasDisabled = box.disabled;
+    box.disabled = noTv;
+    if (noTv) box.checked = false;
+    else if (wasDisabled) box.checked = true;
+    const row = box.closest(".checkbox");
+    row.classList.toggle("is-disabled", noTv);
+    let hint = row.querySelector(".checkbox__hint");
+    if (noTv && !hint) { hint = document.createElement("span"); hint.className = "checkbox__hint"; hint.textContent = "Krever TV-pakke"; row.appendChild(hint); }
+    if (!noTv && hint) hint.remove();
+  }
+  form.addEventListener("change", (e) => { if (e.target.name === "tv") syncTvDependency(); });
+  $("pkgEdit").addEventListener("click", () => { fillModal(); modal.showModal(); });
+  modal.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => modal.close("cancel")));
+  modal.addEventListener("click", (e) => { if (e.target === modal) modal.close("cancel"); });
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const prev = [...$("pkgChips").children].map((li) => li.textContent);
+    state.pkg = {
+      speed: form.elements.speed.value,
+      tv: form.elements.tv.value,
+      extras: [...form.querySelectorAll('input[name="extras"]:checked')].map((i) => i.value),
+    };
+    modal.close("save");
+    renderChips(prev);
+    render();
+    $("pkgEdit").focus();
+  });
+
+  // ---------- Address ----------
+  const address = $("address"), addressClear = $("addressClear");
+  const syncAddress = () => { addressClear.hidden = !address.value; };
+  address.addEventListener("input", syncAddress);
+  addressClear.addEventListener("click", () => { address.value = ""; syncAddress(); address.focus(); });
+  renderChips();
 
   // ---------- Magnetic slider ----------
   const track = $("track"), thumb = $("thumb"), fill = $("fill"), tip = $("tip"), tipBox = $("tipText"), range = $("range");
