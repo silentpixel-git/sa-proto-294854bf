@@ -557,6 +557,7 @@
     border: 1px solid var(--modal-edge); border-radius: var(--radius-s); background: var(--page-default); color: var(--text-default);
     box-shadow: 0 16px 48px rgba(0,11,46,.24); overflow: auto;
   }
+  .modal:focus { outline: none; }
   .modal::backdrop { background: var(--backdrop); }
   .modal[open] { animation: modalIn .22s cubic-bezier(.25, 1, .5, 1); }
   .modal[open]::backdrop { animation: fadeIn .22s ease-out; }
@@ -573,8 +574,9 @@
   .modal__body { display: flex; flex-direction: column; gap: 20px; }
   .mgroups { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .mgroup { border: 0; margin: 0; padding: 0; min-width: 0; }
-  .mgroup__title { padding: 0; font-size: 16px; font-weight: 500; line-height: 1.4; }
-  .mgroup__rule { margin: 4px 0 4px; font-size: 14px; font-weight: 300; line-height: 1.4; color: var(--text-subtle); }
+  /* float stops Chrome's fieldset legend layout from reserving extra height while the modal animates */
+  .mgroup__title { float: left; width: 100%; margin-bottom: 4px; padding: 0; font-size: 16px; font-weight: 500; line-height: 1.4; }
+  .mgroup__rule { clear: both; margin: 0 0 4px; font-size: 14px; font-weight: 300; line-height: 1.4; color: var(--text-subtle); }
   .modal__note { margin: -4px 0 0; font-size: 16px; font-weight: 300; line-height: 1.5; color: var(--text-subtle); }
   .choice .radio-box {
     width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; border: 2px solid var(--border-input);
@@ -905,7 +907,7 @@
 </div>
 
 <!-- Modal: Endre produkter i pakken -->
-<dialog class="modal" id="pkgModal" aria-labelledby="pkgModalTitle">
+<dialog class="modal" id="pkgModal" aria-labelledby="pkgModalTitle" tabindex="-1">
   <form method="dialog" id="pkgForm">
     <div class="modal__head">
       <h2 class="modal__title" id="pkgModalTitle">Endre produkter i pakken</h2>
@@ -1073,7 +1075,7 @@
     if (!noTv && hint) hint.remove();
   }
   form.addEventListener("change", (e) => { if (e.target.name === "tv") syncTvDependency(); });
-  $("pkgEdit").addEventListener("click", () => { fillModal(); modal.showModal(); });
+  $("pkgEdit").addEventListener("click", () => { fillModal(); modal.showModal(); modal.focus(); });
   function closeModal(reason, after) {
     if (!modal.open || modal.classList.contains("is-closing")) return;
     modal.classList.add("is-closing");
