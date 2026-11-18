@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Bruksinnsikt – Anbefalt bredbånd</title>
+<script>
+  (function () {
+    var q = new URLSearchParams(location.search).get("theme");
+    var saved = null; try { saved = localStorage.getItem("sa-theme"); } catch (e) {}
+    var t = q || saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.dataset.theme = t === "dark" ? "dark" : "light";
+  })();
+</script>
+<style>
+  /* Telegrafen semantic colours – same tokens as the OneView prototype */
+  :root {
+    color-scheme: light;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --text-default: #293351;
+    --text-subtle: #4f5b7d;
+    --text-strong: #000b2e;
+    --text-action: #1020f9;
+    --surface-page: #f9fafb;
+    --surface-default: #ffffff;
+    --surface-strong: #e5e8f0;
+    --surface-action-subtle: #ebf3ff;
+    --surface-action: #1020f9;
+    --on-action: #ffffff;
+    --border-subtle: #b2bad1;
+    --border-subtler: #e5e8f0;
+    --bar-muted: #c5cbdd;
+    --success: #1f8a45;
+    --success-subtle: #c9f4d3;
+    --warning: #b23f06;
+    --warning-subtle: #ffe6d6;
+    --shadow-pop: 0 8px 24px rgba(0,11,46,.12);
+    --font: "Telenor Evolution UI", "Telenor Evolution", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --text-default: #f2f3f7;
+    --text-subtle: #c5cbdd;
+    --text-strong: #ffffff;
+    --text-action: #42f0f0;
+    --surface-page: #000b2e;
+    --surface-default: #0b1638;
+    --surface-strong: #374262;
+    --surface-action-subtle: #003333;
+    --surface-action: #42f0f0;
+    --on-action: #070452;
+    --border-subtle: #4f5b7d;
+    --border-subtler: #232e50;
+    --bar-muted: #4f5b7d;
+    --success: #52d07a;
+    --success-subtle: #0f3d22;
+    --warning: #ff8a3d;
+    --warning-subtle: #3d2310;
+    --shadow-pop: 0 8px 24px rgba(0,0,0,.45);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: var(--font); font-weight: 300; color: var(--text-default); background: var(--surface-page);
+    -webkit-font-smoothing: antialiased; font-size: 16px; line-height: 1.5;
+  }
+  ::selection { background: var(--surface-action); color: var(--on-action); }
+  button { font: inherit; color: inherit; }
+  h1, h2, h3, p { margin: 0; }
+  :focus-visible { outline: 2px solid var(--surface-action); outline-offset: 2px; border-radius: 4px; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 32px 96px; }
+
+  /* ---------- Header ---------- */
+  .top { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 28px; }
+  .top h1 { font-size: 32px; line-height: 40px; font-weight: 500; color: var(--text-strong); letter-spacing: -0.01em; }
+  .top__sub { margin-top: 6px; color: var(--text-subtle); font-size: 16px; }
+  .top__sub a { color: var(--text-action); text-underline-offset: 3px; }
+  .demo { display: inline-flex; align-items: center; height: 24px; padding: 0 8px; margin-left: 8px; border-radius: 8px;
+    background: var(--warning-subtle); color: var(--warning); font-size: 12px; font-weight: 500; vertical-align: 2px; }
+  .filters { display: flex; gap: 16px; flex-wrap: wrap; }
+  .seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface-strong); }
+  .seg button {
+    border: 0; background: transparent; height: 34px; padding: 0 14px; border-radius: 8px; cursor: pointer;
+    font-size: 14px; font-weight: 400; color: var(--text-subtle); transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
+  }
+  .seg button[aria-pressed="true"] { background: var(--surface-default); color: var(--text-strong); font-weight: 500; box-shadow: 0 1px 3px rgba(0,11,46,.12); }
+  @media (hover: hover) and (pointer: fine) { .seg button:not([aria-pressed="true"]):hover { color: var(--text-strong); } }
+  .seg button:active { transform: scale(0.97); }
+
+  /* ---------- KPI strip ---------- */
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); background: var(--surface-default); border: 1px solid var(--border-subtler); border-radius: 12px; margin-bottom: 24px; }
+  .kpi { padding: 20px 24px; }
+  .kpi + .kpi { border-left: 1px solid var(--border-subtler); }
+  .kpi__label { font-size: 14px; color: var(--text-subtle); }
+  .kpi__value { font-size: 32px; line-height: 40px; font-weight: 500; color: var(--text-strong); margin-top: 4px; letter-spacing: -0.01em; }
+  .kpi__delta { font-size: 13px; margin-top: 4px; color: var(--text-subtle); }
+  .kpi__delta b { font-weight: 500; }
+  .up { color: var(--success); } .down { color: var(--warning); }
+  .kpi--key { background: var(--surface-action-subtle); border-radius: 11px 0 0 11px; }
+  .kpi--key .kpi__label { color: var(--text-action); font-weight: 500; }
+
+  /* ---------- Panels ---------- */
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+  .panel { background: var(--surface-default); border: 1px solid var(--border-subtler); border-radius: 12px; padding: 24px; min-width: 0; }
+  .c12 { grid-column: span 12; } .c7 { grid-column: span 7; } .c5 { grid-column: span 5; } .c8 { grid-column: span 8; } .c4 { grid-column: span 4; }
+  .panel__head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 20px; }
+  .panel h2 { font-size: 18px; line-height: 26px; font-weight: 500; color: var(--text-strong); }
+  .panel__q { font-size: 14px; color: var(--text-subtle); margin-top: 2px; }
+  .panel__aside { font-size: 14px; color: var(--text-subtle); white-space: nowrap; }
+  .insight { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-subtler); font-size: 14px; color: var(--text-default); }
+  .insight b { font-weight: 500; color: var(--text-strong); }
+  .section-h { grid-column: span 12; font-size: 22px; line-height: 30px; font-weight: 500; color: var(--text-strong); margin: 24px 0 -4px; }
+
+  /* Funnel */
+  .funnel { display: grid; gap: 14px; }
+  .fstep { display: grid; grid-template-columns: 200px 1fr 96px; align-items: center; gap: 16px; }
+  .fstep__name { font-size: 15px; color: var(--text-default); }
+  .fstep__name small { display: block; font-size: 12px; color: var(--text-subtle); }
+  .fstep__bar { height: 32px; background: var(--surface-page); border-radius: 6px; position: relative; overflow: hidden; }
+  .fstep__fill { position: absolute; inset: 0; background: var(--bar-muted); transform-origin: left; transition: transform 400ms var(--ease-out); }
+  .fstep--key .fstep__fill { background: var(--surface-action); }
+  .fstep--sale .fstep__fill { background: var(--success); }
+  .fstep__val { text-align: right; font-size: 15px; font-weight: 500; color: var(--text-strong); }
+  .fstep__val small { display: block; font-weight: 300; font-size: 12px; color: var(--text-subtle); }
+  .fdrop { margin-left: 216px; font-size: 12px; color: var(--text-subtle); margin-top: -8px; }
+  .fdrop b { color: var(--warning); font-weight: 500; }
+
+  /* Charts */
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .axis text, .lbl { font-size: 12px; fill: var(--text-subtle); font-family: var(--font); }
+  .gridline { stroke: var(--border-subtler); stroke-width: 1; }
+  .legend { display: flex; gap: 20px; font-size: 13px; color: var(--text-subtle); }
+  .legend i { display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  .chart-wrap { position: relative; }
+  .tip {
+    position: absolute; pointer-events: none; z-index: 5; min-width: 180px; padding: 10px 12px; border-radius: 8px;
+    background: var(--surface-default); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-pop); font-size: 13px;
+    opacity: 0; transform: translateY(4px); transition: opacity 120ms var(--ease-out), transform 120ms var(--ease-out);
+  }
+  .tip.is-on { opacity: 1; transform: none; }
+  .tip b { font-weight: 500; color: var(--text-strong); }
+  .tip div { display: flex; justify-content: space-between; gap: 16px; }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-weight: 500; color: var(--text-subtle); font-size: 13px; padding: 0 12px 10px 0; border-bottom: 1px solid var(--border-subtler); white-space: nowrap; }
+  td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--border-subtler); vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+  td.r, th.r { text-align: right; }
+  .mini { display: inline-block; width: 72px; height: 6px; border-radius: 3px; background: var(--surface-strong); vertical-align: middle; margin-right: 8px; overflow: hidden; }
+  .mini i { display: block; height: 100%; background: var(--surface-action); border-radius: 3px; }
+  .lift { font-weight: 500; }
+  .tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 8px; font-size: 12px; background: var(--surface-strong); color: var(--text-strong); }
+  .tag--warn { background: var(--warning-subtle); color: var(--warning); }
+
+  .scroll { max-height: 420px; overflow: auto; margin-right: -8px; padding-right: 8px; }
+  .scroll thead th { position: sticky; top: 0; background: var(--surface-default); z-index: 1; }
+  th button { all: unset; cursor: pointer; display: inline-flex; gap: 4px; align-items: center; }
+  th button:focus-visible { outline: 2px solid var(--surface-action); outline-offset: 2px; border-radius: 4px; }
+  th[aria-sort] button::after { content: ""; width: 0; height: 0; border: 4px solid transparent; border-top-color: currentColor; margin-top: 4px; }
+  th[aria-sort="ascending"] button::after { border-top-color: transparent; border-bottom-color: currentColor; margin: 0 0 4px; }
+  th[aria-sort] { color: var(--text-strong); }
+
+  .plan code { font-family: var(--mono); font-size: 13px; color: var(--text-strong); background: var(--surface-page); border: 1px solid var(--border-subtler); padding: 1px 6px; border-radius: 4px; white-space: nowrap; }
+  .plan td { vertical-align: top; }
+  .plan td:first-child { width: 34%; }
+  .plan .prio { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--surface-action); margin-right: 8px; vertical-align: 1px; }
+  .plan .prio--2 { background: var(--bar-muted); }
+  .note { font-size: 13px; color: var(--text-subtle); margin-top: 16px; }
+
+  .log { font-family: var(--mono); font-size: 12px; line-height: 1.55; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .log div { padding: 10px 12px; background: var(--surface-page); border-radius: 8px; border: 1px solid var(--border-subtler); overflow-wrap: anywhere; }
+  .log .ev { color: var(--text-action); font-weight: 600; }
+  .log .t { color: var(--text-subtle); }
+
+  .theme-toggle {
+    position: fixed; right: 20px; bottom: 20px; z-index: 100;
+    display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px 0 6px;
+    border: 1px solid var(--border-subtle); border-radius: 1000px; background: var(--surface-default); color: var(--text-default);
+    font-size: 16px; font-weight: 500; cursor: pointer; box-shadow: var(--shadow-pop);
+  }
+  .theme-toggle__knob { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-action); color: var(--on-action); }
+  .theme-toggle__knob svg { width: 18px; height: 18px; }
+  .theme-toggle .moon, :root[data-theme="dark"] .theme-toggle .sun { display: none; }
+  :root[data-theme="dark"] .theme-toggle .moon { display: block; }
+
+  @media (max-width: 1100px) {
+    .c7, .c5, .c8, .c4 { grid-column: span 12; }
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .kpi + .kpi { border-left: 0; }
+    .kpi--key { border-radius: 11px 11px 0 0; grid-column: span 2; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition-duration: 1ms !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Bruksinnsikt: Anbefalt bredbånd</h1>
+      <p class="top__sub">
+        <span id="periodText">19. okt – 17. nov 2026</span> · Kundeservice, alle salgskanaler<span class="demo">Dummydata</span>
+        · <a href="index.html">Åpne prototypen</a>
+      </p>
+    </div>
+    <div class="filters">
+      <div class="seg" role="group" aria-label="Team" id="teamSeg"></div>
+      <div class="seg" role="group" aria-label="Periode" id="periodSeg">
+        <button type="button" data-v="30" aria-pressed="true">30 dager</button>
+        <button type="button" data-v="7" aria-pressed="false">Siste 7 dager</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="kpis" aria-label="Nøkkeltall" id="kpis"></section>
+
+  <div class="grid">
+    <section class="panel c7" aria-labelledby="fH">
+      <div class="panel__head">
+        <div><h2 id="fH">Trakt fra anbefaling til salg</h2><p class="panel__q">Hvor faller agentene av?</p></div>
+      </div>
+      <div class="funnel" id="funnel"></div>
+      <p class="insight" id="funnelInsight"></p>
+    </section>
+
+    <section class="panel c5" aria-labelledby="hH">
+      <div class="panel__head">
+        <div><h2 id="hH">«Se tilbud»-rate per time</h2><p class="panel__q">Når i arbeidsdagen brukes funksjonen?</p></div>
+      </div>
+      <div class="chart-wrap"><svg id="hourChart" role="img" aria-label="Se tilbud-rate per time på dagen"></svg><div class="tip" id="hourTip"></div></div>
+      <p class="insight" id="hourInsight"></p>
+    </section>
+
+    <section class="panel c12" aria-labelledby="tH">
+      <div class="panel__head">
+        <div><h2 id="tH">Adopsjon over tid</h2><p class="panel__q">Tar agentene i bruk funksjonen etter lansering?</p></div>
+        <div class="legend"><span><i style="background:var(--surface-action)"></i>«Se tilbud»-rate</span><span><i style="background:var(--success)"></i>Til handlekurv etter klikk</span><span><i style="background:var(--bar-muted);height:8px"></i>Anbefalinger vist</span></div>
+      </div>
+      <div class="chart-wrap"><svg id="trendChart" role="img" aria-label="Daglig Se tilbud-rate og konvertering"></svg><div class="tip" id="trendTip"></div></div>
+    </section>
+
+    <h2 class="section-h">Hva gjør agentene på siden?</h2>
+
+    <section class="panel c7" aria-labelledby="iH">
+      <div class="panel__head">
+        <div><h2 id="iH">Bruk av funksjoner</h2><p class="panel__q">Andel av åpnede anbefalinger, og om bruken henger sammen med salg</p></div>
+      </div>
+      <table id="featTable">
+        <thead><tr><th>Handling</th><th>Brukt i</th><th class="r">Til handlekurv<br>når brukt</th><th class="r">… når ikke brukt</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="panel c5" aria-labelledby="dH">
+      <div class="panel__head">
+        <div><h2 id="dH">Rabatt gitt</h2><p class="panel__q">Følger agentene anbefalt rabatt på 400,-/md.?</p></div>
+      </div>
+      <div class="chart-wrap"><svg id="discChart" role="img" aria-label="Fordeling av månedlig rabatt"></svg><div class="tip" id="discTip"></div></div>
+      <p class="insight" id="discInsight"></p>
+    </section>
+
+    <section class="panel c5" aria-labelledby="pH">
+      <div class="panel__head">
+        <div><h2 id="pH">Endringer i pakken</h2><p class="panel__q">Hva endres i «Rediger pakke»?</p></div>
+        <span class="panel__aside" id="editAside"></span>
+      </div>
+      <div class="funnel" id="edits"></div>
+      <p class="insight" id="editInsight"></p>
+    </section>
+
+    <section class="panel c7" aria-labelledby="aH">
+      <div class="panel__head">
+        <div><h2 id="aH">Agenter</h2><p class="panel__q">Hvem bruker funksjonen, og hvem trenger opplæring?</p></div>
+        <span class="panel__aside" id="agentAside"></span>
+      </div>
+      <div class="scroll">
+        <table id="agentTable">
+          <thead><tr>
+            <th data-k="name"><button type="button">Agent</button></th>
+            <th data-k="team"><button type="button">Team</button></th>
+            <th data-k="impr" class="r"><button type="button">Vist</button></th>
+            <th data-k="ctr" aria-sort="descending"><button type="button">«Se tilbud»</button></th>
+            <th data-k="cart" class="r"><button type="button">Handlekurv</button></th>
+            <th data-k="disc" class="r"><button type="button">Snitt rabatt</button></th>
+            <th data-k="sales" class="r"><button type="button">Salg</button></th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <h2 class="section-h">Sporingsplan</h2>
+
+    <section class="panel c12 plan" aria-labelledby="spH">
+      <div class="panel__head">
+        <div><h2 id="spH">Hendelser som må spores</h2><p class="panel__q">Alle hendelser sendes med <code>case_id</code>, <code>agent_id</code> (pseudonymisert), <code>team</code>, <code>variant</code> og tidsstempel</p></div>
+        <span class="panel__aside"><span class="prio"></span>Må ha &nbsp; <span class="prio prio--2"></span>Bør ha</span>
+      </div>
+      <table>
+        <thead><tr><th>Hendelse</th><th>Utløses når</th><th>Egenskaper</th><th>Svarer på</th></tr></thead>
+        <tbody id="planBody"></tbody>
+      </table>
+      <p class="note">Personvern: ingen kundenavn, telefonnummer, e-post eller adressetekst i hendelsene. Adressesøk logger bare lengde på søket og antall treff. Salg kobles på <code>case_id</code> fra ordresystemet, ikke fra prototypen.</p>
+    </section>
+
+    <section class="panel c12" aria-labelledby="lH">
+      <div class="panel__head">
+        <div><h2 id="lH">Siste hendelser</h2><p class="panel__q">Én sak fra første klikk til handlekurv, slik rådataene ser ut</p></div>
+      </div>
+      <div class="log" id="log"></div>
+    </section>
+  </div>
+</div>
+
+<button class="theme-toggle" id="themeToggle" type="button">
+  <span class="theme-toggle__knob" aria-hidden="true">
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+  </span>
+  <span id="themeLabel">Mørk modus</span>
+</button>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const nb = new Intl.NumberFormat("nb-NO");
+  const n = (v) => nb.format(Math.round(v));
+  const pct = (v) => (isFinite(v) ? Math.round(v * 100) : 0) + " %";
+  const kr = (v) => n(v) + ",-";
+  const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
+  const avg = (a, f) => (a.length ? sum(a, f) / a.length : 0);
+  const rate = (a, b) => (b ? a / b : 0);
+  const median = (arr) => { if (!arr.length) return 0; const s = [...arr].sort((x, y) => x - y); return s[Math.floor(s.length / 2)]; };
+  const NS = "http://www.w3.org/2000/svg";
+
+  // ================= Dummy data: 30 days after launch, seeded so it is stable =================
+  function mulberry32(a) { return () => { a |= 0; a = a + 0x6d2b79f5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  const rnd = mulberry32(20261118);
+  const pick = (w) => { let r = rnd() * w.reduce((s, x) => s + x[1], 0); for (const [v, p] of w) { if ((r -= p) <= 0) return v; } return w[0][0]; };
+  const poisson = (l) => { let L = Math.exp(-l), k = 0, p = 1; do { k++; p *= rnd(); } while (p > L); return k - 1; };
+  const logn = (med, s) => med * Math.exp(s * Math.sqrt(-2 * Math.log(rnd() || 1e-9)) * Math.cos(2 * Math.PI * rnd()));
+
+  const TEAMS = ["Oslo", "Bergen", "Trondheim", "Kristiansand"];
+  const TEAM_BIAS = { Oslo: 1.05, Bergen: 1.12, Trondheim: 0.92, Kristiansand: 0.78 };
+  const START = new Date(2026, 9, 19); // man 19. okt 2026
+  const DAYS = 30, RECOMMENDED = 400, BASE_PRICE = 1997;
+
+  const agents = Array.from({ length: 48 }, (_, i) => {
+    const team = TEAMS[i % 4];
+    const r = rnd();
+    // A few champions, a long middle, and a group that almost never clicks
+    const p = r < 0.12 ? 0.04 + rnd() * 0.08 : r > 0.85 ? 0.78 + rnd() * 0.15 : 0.3 + rnd() * 0.42;
+    return { id: "AG-" + (101 + i), team, p: Math.min(0.95, p * TEAM_BIAS[team]), generous: rnd() < 0.18, tinkerer: rnd() < 0.3 };
+  });
+
+  const sessions = [];
+  for (let d = 0; d < DAYS; d++) {
+    const date = new Date(START); date.setDate(START.getDate() + d);
+    const dow = date.getDay();
+    if (dow === 0) continue;
+    const volume = dow === 6 ? 0.35 : 1;
+    const ramp = 0.45 + 0.55 * (1 - Math.exp(-d / 8));
+    for (const a of agents) {
+      const count = poisson(6.2 * volume * (0.75 + rnd() * 0.5));
+      for (let k = 0; k < count; k++) {
+        const hour = dow === 6 ? pick([[9, 3], [10, 4], [11, 4], [12, 3], [13, 3], [14, 2]])
+          : pick([[8, 3], [9, 6], [10, 8], [11, 9], [12, 9], [13, 7], [14, 7], [15, 7], [16, 6], [17, 4], [18, 3], [19, 2]]);
+        const seg = pick([["Mobilkunde", 5], ["Eksisterende bredbånd", 3], ["Ny kunde", 2]]);
+        // Queue pressure at lunch and end of day lowers clicks
+        const hourMul = hour === 11 || hour === 12 ? 0.72 : hour >= 17 ? 0.8 : hour <= 9 ? 1.12 : 1;
+        const segMul = seg === "Mobilkunde" ? 1.12 : seg === "Eksisterende bredbånd" ? 0.78 : 1;
+        const s = { d, date, dow, hour, agent: a.id, team: a.team, seg, clicked: false };
+        s.clicked = rnd() < Math.min(0.97, a.p * ramp * hourMul * segMul);
+        if (s.clicked) {
+          s.ttc = Math.min(600, logn(38, 0.7));
+          s.slider = rnd() < (a.tinkerer ? 0.82 : 0.48);
+          s.discount = !s.slider ? RECOMMENDED
+            : a.generous ? pick([[800, 6], [750, 1], [600, 2], [500, 1], [400, 1]])
+            : pick([[0, 1], [150, 1], [200, 3], [250, 2], [300, 4], [350, 3], [400, 6], [450, 2], [500, 3], [600, 2], [800, 1]]);
+          s.binding = rnd() < 0.13;
+          s.editOpen = rnd() < (a.tinkerer ? 0.45 : 0.22);
+          s.editSaved = s.editOpen && rnd() < 0.68;
+          s.changes = s.editSaved ? {
+            speed: pick([[null, 4], ["1000", 4], ["150", 2]]),
+            tv: rnd() < 0.27, box: rnd() < 0.18, router: rnd() < 0.09,
+          } : null;
+          if (s.changes && !s.changes.speed && !s.changes.tv && !s.changes.box && !s.changes.router) s.changes.speed = "1000";
+          s.addr = rnd() < 0.17;
+          s.addrPicked = s.addr && rnd() < 0.82;
+          s.dateMethod = pick([["first", 56], ["calendar", 33], [null, 11]]);
+          s.back = rnd() < 0.27;
+          let pc = 0.5 + (s.dateMethod ? 0.12 : -0.38) - (s.back ? 0.36 : 0) + (s.editSaved ? 0.06 : 0) + (s.discount >= RECOMMENDED ? 0.07 : -0.05) + (s.binding ? -0.08 : 0);
+          s.cart = rnd() < Math.max(0.03, Math.min(0.95, pc));
+          s.sale = s.cart && rnd() < 0.87;
+          s.top = s.cart ? logn(110, 0.45) : logn(55, 0.7);
+          const speedDelta = s.changes ? (s.changes.speed === "1000" ? 250 : s.changes.speed === "150" ? -200 : 0) + (s.changes.tv ? -499 : 0) : 0;
+          s.monthly = BASE_PRICE + speedDelta - s.discount;
+        }
+        sessions.push(s);
+      }
+    }
+  }
+
+  // ================= Filters =================
+  const state = { team: "Alle", period: 30 };
+  const teamSeg = $("teamSeg");
+  teamSeg.innerHTML = ["Alle", ...TEAMS].map((t) => `<button type="button" data-v="${t}" aria-pressed="${t === "Alle"}">${t}</button>`).join("");
+  function bindSeg(el, key, cast) {
+    el.addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      el.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+      state[key] = cast(b.dataset.v); render();
+    });
+  }
+  bindSeg(teamSeg, "team", String);
+  bindSeg($("periodSeg"), "period", Number);
+
+  const fmtDay = (dt) => dt.toLocaleDateString("nb-NO", { day: "numeric", month: "short" }).replace(".", "");
+  const byTeam = (s) => state.team === "Alle" || s.team === state.team;
+
+  // ================= Render =================
+  function render() {
+    const from = DAYS - state.period;
+    const all = sessions.filter(byTeam);
+    const cur = all.filter((s) => s.d >= from);
+    const first = new Date(START); first.setDate(START.getDate() + from);
+    const last = new Date(START); last.setDate(START.getDate() + DAYS - 1);
+    $("periodText").textContent = `${fmtDay(first)} – ${fmtDay(last)} 2026`;
+    renderKpis(all, cur);
+    renderFunnel(cur);
+    renderHours(cur);
+    renderTrend(all, from);
+    renderFeatures(cur);
+    renderDiscount(cur);
+    renderEdits(cur);
+    renderAgents(cur);
+    renderLog(all);
+  }
+
+  function stats(list) {
+    const c = list.filter((s) => s.clicked), cart = c.filter((s) => s.cart), sales = c.filter((s) => s.sale);
+    return { impr: list.length, clicks: c.length, ctr: rate(c.length, list.length), cart: cart.length, cartRate: rate(cart.length, c.length),
+      sales: sales.length, disc: avg(c, (s) => s.discount), value: sum(sales, (s) => s.monthly), c };
+  }
+
+  function renderKpis(all, cur) {
+    const k = stats(cur);
+    // 30 days: last week vs launch week. 7 days: vs the week before.
+    const a = state.period === 30 ? all.filter((s) => s.d < 7) : all.filter((s) => s.d >= DAYS - 14 && s.d < DAYS - 7);
+    const b = all.filter((s) => s.d >= DAYS - 7);
+    const A = stats(a), B = stats(b);
+    const vs = state.period === 30 ? "siste uke mot første uke" : "mot uka før";
+    const dPts = (x, y) => { const v = Math.round((y - x) * 100); return `<b class="${v >= 0 ? "up" : "down"}">${v >= 0 ? "+" : "−"}${Math.abs(v)} pp</b> ${vs}`; };
+    const dRel = (x, y) => { const v = Math.round(rate(y - x, x) * 100); return `<b class="${v >= 0 ? "up" : "down"}">${v >= 0 ? "+" : "−"}${Math.abs(v)} %</b> ${vs}`; };
+    const dKr = (x, y) => { const v = Math.round(y - x); return `<b>${v >= 0 ? "+" : "−"}${n(Math.abs(v))},-</b> ${vs}`; };
+    $("kpis").innerHTML = [
+      ["«Se tilbud»-rate", pct(k.ctr), dPts(A.ctr, B.ctr), "kpi--key", `${n(k.clicks)} av ${n(k.impr)} anbefalinger`],
+      ["Anbefalinger vist", n(k.impr), dRel(A.impr / 7, B.impr / 7)],
+      ["Til handlekurv etter klikk", pct(k.cartRate), dPts(A.cartRate, B.cartRate)],
+      ["Salg via anbefaling", n(k.sales), `${kr(k.value)}/md. i ny månedsverdi`],
+      ["Snitt rabatt", kr(k.disc) + "/md.", dKr(A.disc, B.disc)],
+    ].map(([l, v, d, cls = "", extra]) => `<div class="kpi ${cls}"><p class="kpi__label">${l}</p><p class="kpi__value num">${v}</p><p class="kpi__delta num">${extra ? extra + "<br>" : ""}${d}</p></div>`).join("");
+  }
+
+  function renderFunnel(cur) {
+    const k = stats(cur);
+    const adjusted = k.c.filter((s) => s.slider || s.binding || s.editSaved).length;
+    const steps = [
+      ["Anbefaling vist", "Stripen «Nysalg bredbånd»", k.impr, ""],
+      ["Klikket «Se tilbud»", "Åpnet Anbefalt bredbånd", k.clicks, "fstep--key"],
+      ["Tilpasset tilbudet", "Rabatt, binding eller pakke", adjusted, ""],
+      ["Gikk til handlekurv", "«Gå til handlekurv»", k.cart, ""],
+      ["Salg fullført", "Ordre koblet på case_id", k.sales, "fstep--sale"],
+    ];
+    let html = "";
+    steps.forEach(([name, sub, v, cls], i) => {
+      if (i === 1) html += `<p class="fdrop num"><b>${pct(1 - k.ctr)}</b> av anbefalingene blir aldri åpnet</p>`;
+      if (i === 3) html += `<p class="fdrop num"><b>${pct(1 - k.cartRate)}</b> av de som åpner, går ikke videre til handlekurv</p>`;
+      html += `<div class="fstep ${cls}"><span class="fstep__name">${name}<small>${sub}</small></span>
+        <span class="fstep__bar"><span class="fstep__fill" style="transform:scaleX(${rate(v, k.impr).toFixed(4)})"></span></span>
+        <span class="fstep__val num">${n(v)}<small>${pct(rate(v, k.impr))}</small></span></div>`;
+    });
+    $("funnel").innerHTML = html;
+    $("funnelInsight").innerHTML = `Det største frafallet er før klikk: <b>${n(k.impr - k.clicks)} anbefalinger</b> ble vist uten at agenten åpnet dem. Agenter som åpner, selger i <b>${pct(rate(k.sales, k.clicks))}</b> av tilfellene.`;
+  }
+
+  // ---------- Generic SVG helpers ----------
+  function el(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function showTip(tip, wrap, html, x, y) {
+    tip.innerHTML = html; tip.classList.add("is-on");
+    const w = wrap.clientWidth, tw = tip.offsetWidth;
+    tip.style.left = Math.max(0, Math.min(w - tw, x - tw / 2)) + "px";
+    tip.style.top = (y - tip.offsetHeight - 12) + "px";
+  }
+  const hideTip = (tip) => tip.classList.remove("is-on");
+
+  function renderHours(cur) {
+    const svg = $("hourChart"), tip = $("hourTip"), wrap = svg.parentNode; svg.innerHTML = "";
+    const W = 480, H = 220, L = 32, B = 26, T = 18;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const hours = Array.from({ length: 12 }, (_, i) => 8 + i);
+    const data = hours.map((h) => { const l = cur.filter((s) => s.hour === h); return { h, n: l.length, r: rate(l.filter((s) => s.clicked).length, l.length) }; });
+    const total = stats(cur).ctr;
+    const max = 1, ih = H - B - T, bw = (W - L) / hours.length;
+    [0, 0.25, 0.5, 0.75, 1].forEach((v) => {
+      const y = T + ih - v * ih / max;
+      el("line", { class: "gridline", x1: L, x2: W, y1: y, y2: y }, svg);
+      el("text", { class: "lbl", x: L - 6, y: y + 4, "text-anchor": "end" }, svg).textContent = v * 100 + "%";
+    });
+    const low = data.filter((d) => d.n).sort((a, b) => a.r - b.r).slice(0, 2).map((d) => d.h);
+    data.forEach((d, i) => {
+      const h = d.r * ih, x = L + i * bw + 5, y = T + ih - h;
+      el("rect", { x, y, width: bw - 10, height: Math.max(0, h), rx: 4, fill: low.includes(d.h) ? "var(--warning)" : "var(--surface-action)", opacity: low.includes(d.h) ? 0.85 : 1 }, svg);
+      el("text", { class: "lbl", x: x + (bw - 10) / 2, y: H - 6, "text-anchor": "middle" }, svg).textContent = String(d.h).padStart(2, "0");
+      const hit = el("rect", { x: L + i * bw, y: T, width: bw, height: ih, fill: "transparent" }, svg);
+      hit.addEventListener("pointerenter", () => {
+        const r = svg.getBoundingClientRect(), k = r.width / W;
+        showTip(tip, wrap, `<b>kl. ${String(d.h).padStart(2, "0")}–${String(d.h + 1).padStart(2, "0")}</b><div><span>«Se tilbud»-rate</span><b class="num">${pct(d.r)}</b></div><div><span>Anbefalinger vist</span><span class="num">${n(d.n)}</span></div>`, (x + (bw - 10) / 2) * k, y * k);
+      });
+      hit.addEventListener("pointerleave", () => hideTip(tip));
+    });
+    const ay = T + ih - total * ih;
+    el("line", { x1: L, x2: W, y1: ay, y2: ay, stroke: "var(--text-subtle)", "stroke-dasharray": "4 4", "stroke-width": 1 }, svg);
+    el("text", { class: "lbl", x: W, y: ay - 6, "text-anchor": "end" }, svg).textContent = "snitt " + pct(total);
+    const fmt = (h) => `kl. ${String(h).padStart(2, "0")}`;
+    $("hourInsight").innerHTML = `Lavest rate <b>${fmt(Math.min(...low))}</b> og <b>${fmt(Math.max(...low))}</b>, når køen er lengst. Vurder om stripen bør være mer synlig, eller om agentene trenger et kortere løp i travle perioder.`;
+  }
+
+  function renderTrend(all, from) {
+    const svg = $("trendChart"), tip = $("trendTip"), wrap = svg.parentNode; svg.innerHTML = "";
+    const W = 1200, H = 300, L = 40, R = 12, T = 12, VOL = 56, GAP = 28, B = 22;
+    const ih = H - T - VOL - GAP - B;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const days = Array.from({ length: DAYS }, (_, d) => {
+      const l = all.filter((s) => s.d === d), st = stats(l);
+      const dt = new Date(START); dt.setDate(START.getDate() + d);
+      return { d, dt, n: l.length, ctr: st.ctr, cr: st.cartRate, clicks: st.clicks, sales: st.sales };
+    });
+    const step = (W - L - R) / DAYS, X = (d) => L + d * step + step / 2;
+    if (from > 0) el("rect", { x: L, y: T, width: from * step, height: H - T - B, fill: "var(--surface-page)" }, svg);
+    [0, 0.25, 0.5, 0.75, 1].forEach((v) => {
+      const y = T + ih - v * ih;
+      el("line", { class: "gridline", x1: L, x2: W - R, y1: y, y2: y }, svg);
+      el("text", { class: "lbl", x: L - 8, y: y + 4, "text-anchor": "end" }, svg).textContent = v * 100 + "%";
+    });
+    const line = (key, color) => {
+      let dStr = "", pen = false;
+      days.forEach((p) => { if (!p.n) { pen = false; return; } const y = T + ih - p[key] * ih; dStr += (pen ? "L" : "M") + X(p.d).toFixed(1) + " " + y.toFixed(1); pen = true; });
+      el("path", { d: dStr, fill: "none", stroke: color, "stroke-width": 2.5, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+      days.forEach((p) => { if (p.n) el("circle", { cx: X(p.d), cy: T + ih - p[key] * ih, r: 3, fill: color }, svg); });
+    };
+    line("cr", "var(--success)");
+    line("ctr", "var(--surface-action)");
+    const vmax = Math.max(...days.map((p) => p.n)), vy = T + ih + GAP;
+    days.forEach((p) => {
+      const h = rate(p.n, vmax) * VOL;
+      el("rect", { x: X(p.d) - step * 0.32, y: vy + VOL - h, width: step * 0.64, height: h, rx: 2, fill: "var(--bar-muted)" }, svg);
+      if (p.dt.getDay() === 1 || (p.d === DAYS - 1 && p.dt.getDay() > 3)) el("text", { class: "lbl", x: X(p.d), y: H - 4, "text-anchor": "middle" }, svg).textContent = fmtDay(p.dt);
+      if (p.dt.getDay() === 0) el("text", { class: "lbl", x: X(p.d), y: vy + VOL - 4, "text-anchor": "middle", opacity: 0.6 }, svg).textContent = "stengt";
+    });
+    const cursor = el("line", { x1: 0, x2: 0, y1: T, y2: vy + VOL, stroke: "var(--border-subtle)", "stroke-width": 1, opacity: 0 }, svg);
+    days.forEach((p) => {
+      const hit = el("rect", { x: L + p.d * step, y: T, width: step, height: H - T - B, fill: "transparent" }, svg);
+      hit.addEventListener("pointerenter", () => {
+        if (!p.n) { hideTip(tip); cursor.setAttribute("opacity", 0); return; }
+        cursor.setAttribute("x1", X(p.d)); cursor.setAttribute("x2", X(p.d)); cursor.setAttribute("opacity", 1);
+        const r = svg.getBoundingClientRect(), k = r.width / W;
+        const wd = p.dt.toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" });
+        showTip(tip, wrap, `<b>${wd}</b><div><span>«Se tilbud»-rate</span><b class="num">${pct(p.ctr)}</b></div><div><span>Til handlekurv etter klikk</span><span class="num">${pct(p.cr)}</span></div><div><span>Anbefalinger vist</span><span class="num">${n(p.n)}</span></div><div><span>Salg</span><span class="num">${n(p.sales)}</span></div>`, X(p.d) * k, (T + ih - p.ctr * ih) * k);
+      });
+    });
+    svg.onpointerleave = () => { hideTip(tip); cursor.setAttribute("opacity", 0); };
+  }
+
+  function renderFeatures(cur) {
+    const c = cur.filter((s) => s.clicked);
+    const rows = [
+      ["Justerte rabatt", (s) => s.slider],
+      ["Valgte «Første tilgjengelige dato»", (s) => s.dateMethod === "first"],
+      ["Valgte dato i kalender", (s) => s.dateMethod === "calendar"],
+      ["Åpnet «Rediger pakke»", (s) => s.editOpen],
+      ["Lagret endret pakke", (s) => s.editSaved],
+      ["Brukte adressesøk", (s) => s.addr],
+      ["Byttet til «Ingen binding»", (s) => s.binding],
+      ["Gikk «Tilbake til oversikt»", (s) => s.back],
+    ];
+    $("featTable").tBodies[0].innerHTML = rows.map(([label, f]) => {
+      const used = c.filter(f), not = c.filter((s) => !f(s));
+      const u = rate(used.filter((s) => s.cart).length, used.length), o = rate(not.filter((s) => s.cart).length, not.length);
+      const diff = Math.round((u - o) * 100);
+      return `<tr><td>${label}</td><td class="num"><span class="mini"><i style="width:${rate(used.length, c.length) * 100}%"></i></span>${pct(rate(used.length, c.length))}</td>
+        <td class="r num"><span class="lift ${diff >= 3 ? "up" : diff <= -3 ? "down" : ""}">${pct(u)}</span></td><td class="r num">${pct(o)}</td></tr>`;
+    }).join("");
+  }
+
+  function renderDiscount(cur) {
+    const svg = $("discChart"), tip = $("discTip"), wrap = svg.parentNode; svg.innerHTML = "";
+    const c = cur.filter((s) => s.clicked);
+    const W = 480, H = 210, L = 8, B = 26, T = 22, ih = H - B - T;
+    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    const bins = Array.from({ length: 17 }, (_, i) => i * 50).map((v) => ({ v, n: c.filter((s) => s.discount === v).length }));
+    const max = Math.max(1, ...bins.map((b) => b.n)), bw = (W - L) / bins.length;
+    el("line", { class: "gridline", x1: L, x2: W, y1: T + ih, y2: T + ih }, svg);
+    bins.forEach((b, i) => {
+      const h = rate(b.n, max) * ih, x = L + i * bw + 3, y = T + ih - h;
+      const fill = b.v === RECOMMENDED ? "var(--surface-action)" : b.v === 800 ? "var(--warning)" : "var(--bar-muted)";
+      el("rect", { x, y, width: bw - 6, height: Math.max(h, b.n ? 2 : 0), rx: 3, fill }, svg);
+      if (i % 4 === 0) el("text", { class: "lbl", x: x + (bw - 6) / 2, y: H - 6, "text-anchor": "middle" }, svg).textContent = b.v;
+      if (b.v === RECOMMENDED) el("text", { class: "lbl", x: x + (bw - 6) / 2, y: y - 6, "text-anchor": "middle", style: "fill:var(--text-action);font-weight:500" }, svg).textContent = "Anbefalt";
+      const hit = el("rect", { x: L + i * bw, y: T, width: bw, height: ih, fill: "transparent" }, svg);
+      hit.addEventListener("pointerenter", () => {
+        const r = svg.getBoundingClientRect(), k = r.width / W;
+        showTip(tip, wrap, `<b>−${b.v},-/md.</b><div><span>Tilbud</span><span class="num">${n(b.n)}</span></div><div><span>Andel</span><span class="num">${pct(rate(b.n, c.length))}</span></div>`, (x + (bw - 6) / 2) * k, y * k);
+      });
+      hit.addEventListener("pointerleave", () => hideTip(tip));
+    });
+    const untouched = c.filter((s) => !s.slider).length, atRec = c.filter((s) => s.discount === RECOMMENDED).length, atMax = c.filter((s) => s.discount === 800).length;
+    $("discInsight").innerHTML = `<b>${pct(rate(atRec, c.length))}</b> ender på anbefalt rabatt (${pct(rate(untouched, c.length))} rører ikke slideren). <b>${pct(rate(atMax, c.length))}</b> gir maks rabatt på 800,-, som koster ${kr(atMax * 400 * 12)} i året sammenlignet med anbefalt.`;
+  }
+
+  function renderEdits(cur) {
+    const opened = cur.filter((s) => s.clicked && s.editOpen), saved = opened.filter((s) => s.editSaved);
+    const items = [
+      ["Oppgradert til 1000 Mbps", saved.filter((s) => s.changes.speed === "1000").length],
+      ["Nedgradert til 150 Mbps", saved.filter((s) => s.changes.speed === "150").length],
+      ["Fjernet T-We-pakke", saved.filter((s) => s.changes.tv).length],
+      ["Fjernet T-We Boks III", saved.filter((s) => s.changes.box).length],
+      ["Fjernet WiFi Ruter II", saved.filter((s) => s.changes.router).length],
+    ];
+    $("editAside").textContent = `${n(saved.length)} lagret av ${n(opened.length)} åpnet`;
+    $("edits").innerHTML = items.map(([l, v]) => `<div class="fstep" style="grid-template-columns:180px 1fr 56px"><span class="fstep__name">${l}</span>
+      <span class="fstep__bar" style="height:20px"><span class="fstep__fill" style="transform:scaleX(${rate(v, saved.length).toFixed(4)})"></span></span><span class="fstep__val num">${pct(rate(v, saved.length))}</span></div>`).join("");
+    const up = items[0][1], tv = items[2][1];
+    $("editInsight").innerHTML = `<b>${pct(rate(opened.length - saved.length, opened.length))}</b> lukker «Rediger pakke» uten å lagre. Hastighet endres oftest, og oppgradering er ${up > tv ? "vanligere enn å fjerne TV" : "sjeldnere enn å fjerne TV"}.`;
+  }
+
+  // ---------- Agents ----------
+  let sortKey = "ctr", sortDir = -1;
+  const agentHead = $("agentTable").tHead;
+  agentHead.addEventListener("click", (e) => {
+    const th = e.target.closest("th"); if (!th) return;
+    const k = th.dataset.k;
+    sortDir = k === sortKey ? -sortDir : (k === "name" || k === "team" ? 1 : -1); sortKey = k;
+    agentHead.querySelectorAll("th").forEach((x) => x === th ? x.setAttribute("aria-sort", sortDir > 0 ? "ascending" : "descending") : x.removeAttribute("aria-sort"));
+    renderAgents(lastCur);
+  });
+  let lastCur = [];
+  function renderAgents(cur) {
+    lastCur = cur;
+    const rows = agents.filter((a) => state.team === "Alle" || a.team === state.team).map((a) => {
+      const st = stats(cur.filter((s) => s.agent === a.id));
+      return { name: a.id, team: a.team, impr: st.impr, ctr: st.ctr, cart: st.cartRate, disc: st.disc, sales: st.sales };
+    }).filter((r) => r.impr);
+    rows.sort((a, b) => (typeof a[sortKey] === "string" ? a[sortKey].localeCompare(b[sortKey]) : a[sortKey] - b[sortKey]) * sortDir);
+    const low = rows.filter((r) => r.ctr < 0.2).length;
+    $("agentAside").innerHTML = `<span class="tag tag--warn">${low}</span> av ${rows.length} under 20 %`;
+    $("agentTable").tBodies[0].innerHTML = rows.map((r) => `<tr>
+      <td>${r.name}</td><td>${r.team}</td><td class="r num">${n(r.impr)}</td>
+      <td class="num"><span class="mini"><i style="width:${r.ctr * 100}%;${r.ctr < 0.2 ? "background:var(--warning)" : ""}"></i></span>${pct(r.ctr)}</td>
+      <td class="r num">${r.disc ? pct(r.cart) : "–"}</td><td class="r num">${r.disc ? kr(r.disc) : "–"}</td><td class="r num">${n(r.sales)}</td></tr>`).join("");
+  }
+
+  // ---------- Raw event examples ----------
+  function renderLog(all) {
+    const s = all.filter((x) => x.d === DAYS - 1 && x.clicked && x.cart).slice(-1)[0] || all[all.length - 1];
+    const t = (sec) => { const d = new Date(s.date); d.setHours(s.hour, 14, 0); d.setSeconds(sec); return d.toTimeString().slice(0, 8); };
+    const base = `case_id:"C-${(48213 + s.d * 37) % 99999}", agent_id:"${s.agent}"`;
+    let sec = 0;
+    const ev = [
+      ["reco_strip_impression", `${base}, segment:"${s.seg}"`],
+      ["reco_cta_click", `${base}, cta:"Se tilbud", time_to_click_ms:${Math.round(s.ttc * 1000)}`],
+      ["reco_discount_changed", `${base}, from:400, to:${s.discount}, recommended:400`],
+      ["reco_date_selected", `${base}, method:"${s.dateMethod === "calendar" ? "calendar" : "first_available"}", days_ahead:0`],
+      ["reco_add_to_cart", `${base}, monthly_price:${s.monthly}, discount:${s.discount}, time_on_page_ms:${Math.round(s.top * 1000)}`],
+    ];
+    $("log").innerHTML = ev.map(([e, p], i) => `<div><span class="t">${t(sec + i * 22)}</span> <span class="ev">${e}</span><br>{ ${p} }</div>`).join("");
+  }
+
+  // ---------- Tracking plan ----------
+  const PLAN = [
+    [1, "reco_strip_impression", "Stripen «Nysalg bredbånd» vises på Oversikt", "segment, variant, synlig_ms", "Hvor mange får muligheten? (nevneren for alt)"],
+    [1, "reco_cta_click", "Agenten klikker «Se tilbud»", "time_to_click_ms, posisjon", "Bruker de funksjonen i det hele tatt?"],
+    [1, "reco_strip_ignored", "Saken lukkes uten klikk (avledes i backend)", "call_duration_ms", "Hvor og når mister vi dem?"],
+    [1, "reco_add_to_cart", "«Gå til handlekurv»", "pakke, monthly_price, discount, binding, time_on_page_ms", "Fører bruk til salg?"],
+    [1, "order_completed", "Ordre bekreftet i ordresystemet", "order_id, source:\"reco\"", "Faktisk salg og verdi"],
+    [1, "reco_discount_changed", "Slider slippes (ikke hvert steg)", "from, to, recommended, input: drag | keyboard", "Følger de anbefalt rabatt?"],
+    [1, "reco_back_to_overview", "«Tilbake til oversikt»", "time_on_page_ms, interactions_count", "Hvorfor avbryter de?"],
+    [2, "reco_package_edit_opened / _saved / _cancelled", "«Rediger pakke» åpnes, lagres eller lukkes", "endringer[], price_delta", "Passer anbefalt pakke?"],
+    [2, "reco_binding_changed", "Bindingstid endres", "from, to", "Hvor ofte velges Ingen binding?"],
+    [2, "reco_date_selected", "Dato velges", "method: first_available | calendar, days_ahead", "Er avkrysningsboksen nyttig?"],
+    [2, "reco_address_search", "Adresse velges eller søket avbrytes", "query_length, results_count, selected_rank", "Er standardadressen feil for ofte?"],
+  ];
+  $("planBody").innerHTML = PLAN.map(([p, e, when, props, q]) => `<tr><td><span class="prio ${p === 2 ? "prio--2" : ""}" aria-label="${p === 1 ? "Må ha" : "Bør ha"}"></span><code>${e}</code></td><td>${when}</td><td>${props}</td><td>${q}</td></tr>`).join("");
+
+  // ---------- Theme ----------
+  const themeBtn = $("themeToggle"), themeLabel = $("themeLabel");
+  const syncTheme = () => { themeLabel.textContent = document.documentElement.dataset.theme === "dark" ? "Lys modus" : "Mørk modus"; };
+  themeBtn.addEventListener("click", () => {
+    const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = t; try { localStorage.setItem("sa-theme", t); } catch (e) {}
+    syncTheme();
+  });
+  syncTheme();
+  render();
+})();
+</script>
+</body>
+</html>
