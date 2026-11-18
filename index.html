@@ -39,6 +39,7 @@
     --border-subtle: #b2bad1;         /* Border/Subtle */
     --border-input: #7c88ab;          /* Border/Input/Resting */
     --border-input-active: #070452;
+    --tag-alt1: #adedff;              /* Accent/1-Subtle */
     --product-dim: rgba(249,249,251,.42);
     --shadow-pop: 0 8px 24px rgba(0,11,46,.12);
     /* Status colours: not in Telegrafen tokens.css, prototype values */
@@ -76,6 +77,7 @@
     --border-subtle: #4f5b7d;         /* Neutral/700 */
     --border-input: #7c88ab;
     --border-input-active: #f2f3f7;
+    --tag-alt1: #00566b;
     --product-dim: rgba(0,11,46,.35);
     --shadow-pop: 0 8px 24px rgba(0,0,0,.45);
     --status-success: #52d07a;
@@ -535,14 +537,29 @@
   /* ---------- Address, chips, edit ---------- */
   .address-group { margin-bottom: 16px; }
   .address-group .icon-btn[hidden] { display: none; }
+  .addr { position: relative; }
+  .addr__panel {
+    position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 30; list-style: none; margin: 0; padding: 8px 0;
+    background: var(--surface-default); border: 1px solid var(--border-input); border-radius: 8px; box-shadow: var(--shadow-pop);
+    opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .15s var(--ease-out), transform .15s var(--ease-out);
+  }
+  .addr.is-open .addr__panel { opacity: 1; transform: none; pointer-events: auto; }
+  .addr__opt { min-height: 44px; padding: 12px 24px; font-size: 18px; font-weight: 300; line-height: 1.4; color: var(--text-default); cursor: pointer; }
+  .addr__opt mark { background: none; color: var(--text-strong); font-weight: 500; }
+  .addr__opt:hover, .addr__opt.is-active { background: var(--surface-action-subtle); }
+  .addr__status { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 12px 24px; font-size: 18px; font-weight: 300; line-height: 1.4; color: var(--text-subtle); }
+  .addr__spin { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--surface-strong); border-top-color: var(--surface-action); animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .addr__spin { animation-duration: 1.6s; } .addr__panel { transform: none; } }
   .field-cols > .select { width: auto; }
   .chips { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
   .chips__list { display: contents; list-style: none; }
   .chip {
-    display: inline-flex; align-items: center; height: 28px; padding: 4px 10px; border-radius: 16px;
-    background: var(--surface-default); border: 1px solid var(--border-input);
-    color: var(--text-default); font-size: 14px; font-weight: 300; line-height: 1.4; white-space: nowrap;
+    display: inline-flex; align-items: center; height: 24px; min-width: 36px; padding: 0 8px; border-radius: 8px;
+    background: var(--surface-strong); color: var(--text-strong);
+    font-size: 12px; font-weight: 300; line-height: 1.4; white-space: nowrap;
   }
+  .chip--alt1 { background: var(--tag-alt1); }
   .chip.is-new { animation: chipIn .3s cubic-bezier(.25, 1, .5, 1); }
   @keyframes chipIn { from { opacity: 0; transform: scale(.9); } }
   .edit-btn {
@@ -833,10 +850,14 @@
       <h1 class="page-title">Anbefalt bredbånd</h1>
       <div class="field-group address-group">
         <label class="label" for="address">Installasjonsadresse:</label>
-        <div class="field">
-          <i class="field__icon ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJTZWFyY2giPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTEzLjUgMi4yNjM5MkM4Ljk0MzY1IDIuMjYzOTIgNS4yNSA1Ljk1NzU3IDUuMjUgMTAuNTEzOUM1LjI1IDEyLjUyMiA1Ljk2NzQ3IDE0LjM2MjYgNy4xNjAwNSAxNS43OTMyTDIuNDY5NjcgMjAuNDgzNkMyLjE3Njc4IDIwLjc3NjUgMi4xNzY3OCAyMS4yNTE0IDIuNDY5NjcgMjEuNTQ0MkMyLjc2MjU2IDIxLjgzNzEgMy4yMzc0NCAyMS44MzcxIDMuNTMwMzMgMjEuNTQ0Mkw4LjIyMDcxIDE2Ljg1MzlDOS42NTEzMyAxOC4wNDY0IDExLjQ5MTkgMTguNzYzOSAxMy41IDE4Ljc2MzlDMTguMDU2MyAxOC43NjM5IDIxLjc1IDE1LjA3MDMgMjEuNzUgMTAuNTEzOUMyMS43NSA1Ljk1NzU3IDE4LjA1NjMgMi4yNjM5MiAxMy41IDIuMjYzOTJaTTYuNzUgMTAuNTEzOUM2Ljc1IDYuNzg1OTkgOS43NzIwOCAzLjc2MzkyIDEzLjUgMy43NjM5MkMxNy4yMjc5IDMuNzYzOTIgMjAuMjUgNi43ODU5OSAyMC4yNSAxMC41MTM5QzIwLjI1IDE0LjI0MTggMTcuMjI3OSAxNy4yNjM5IDEzLjUgMTcuMjYzOUM5Ljc3MjA4IDE3LjI2MzkgNi43NSAxNC4yNDE4IDYuNzUgMTAuNTEzOVoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==)"></i>
-          <input id="address" type="text" value="Snarøyveien 30, 1360 Fornebu" placeholder="Søk etter adresse" autocomplete="street-address" />
-          <button class="icon-btn" id="addressClear" type="button" aria-label="Tøm adresse"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJSZW1vdmUiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTguNzU1NjcgNy42NTA3QzguNDUwNTcgNy4zNDU2IDcuOTU1OTEgNy4zNDU2IDcuNjUwODIgNy42NTA3QzcuMzQ1NzIgNy45NTU3OSA3LjM0NTcyIDguNDUwNDYgNy42NTA4MiA4Ljc1NTU1TDExLjM5NTMgMTIuNUw3LjY1MDcgMTYuMjQ0NkM3LjM0NTYgMTYuNTQ5NyA3LjM0NTYgMTcuMDQ0MyA3LjY1MDcgMTcuMzQ5NEM3Ljk1NTc5IDE3LjY1NDUgOC40NTA0NSAxNy42NTQ1IDguNzU1NTUgMTcuMzQ5NEwxMi41MDAxIDEzLjYwNDlMMTYuMjQ0NiAxNy4zNDkzQzE2LjU0OTcgMTcuNjU0NCAxNy4wNDQzIDE3LjY1NDQgMTcuMzQ5NCAxNy4zNDkzQzE3LjY1NDUgMTcuMDQ0MiAxNy42NTQ1IDE2LjU0OTUgMTcuMzQ5NCAxNi4yNDQ0TDEzLjYwNSAxMi41TDE3LjM0OTMgOC43NTU2N0MxNy42NTQ0IDguNDUwNTcgMTcuNjU0NCA3Ljk1NTkxIDE3LjM0OTMgNy42NTA4MkMxNy4wNDQyIDcuMzQ1NzIgMTYuNTQ5NSA3LjM0NTcyIDE2LjI0NDQgNy42NTA4MkwxMi41MDAxIDExLjM5NTFMOC43NTU2NyA3LjY1MDdaIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==);width:25px;height:25px"></i></button>
+        <div class="addr" id="addr">
+          <div class="field">
+            <i class="field__icon ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJTZWFyY2giPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTEzLjUgMi4yNjM5MkM4Ljk0MzY1IDIuMjYzOTIgNS4yNSA1Ljk1NzU3IDUuMjUgMTAuNTEzOUM1LjI1IDEyLjUyMiA1Ljk2NzQ3IDE0LjM2MjYgNy4xNjAwNSAxNS43OTMyTDIuNDY5NjcgMjAuNDgzNkMyLjE3Njc4IDIwLjc3NjUgMi4xNzY3OCAyMS4yNTE0IDIuNDY5NjcgMjEuNTQ0MkMyLjc2MjU2IDIxLjgzNzEgMy4yMzc0NCAyMS44MzcxIDMuNTMwMzMgMjEuNTQ0Mkw4LjIyMDcxIDE2Ljg1MzlDOS42NTEzMyAxOC4wNDY0IDExLjQ5MTkgMTguNzYzOSAxMy41IDE4Ljc2MzlDMTguMDU2MyAxOC43NjM5IDIxLjc1IDE1LjA3MDMgMjEuNzUgMTAuNTEzOUMyMS43NSA1Ljk1NzU3IDE4LjA1NjMgMi4yNjM5MiAxMy41IDIuMjYzOTJaTTYuNzUgMTAuNTEzOUM2Ljc1IDYuNzg1OTkgOS43NzIwOCAzLjc2MzkyIDEzLjUgMy43NjM5MkMxNy4yMjc5IDMuNzYzOTIgMjAuMjUgNi43ODU5OSAyMC4yNSAxMC41MTM5QzIwLjI1IDE0LjI0MTggMTcuMjI3OSAxNy4yNjM5IDEzLjUgMTcuMjYzOUM5Ljc3MjA4IDE3LjI2MzkgNi43NSAxNC4yNDE4IDYuNzUgMTAuNTEzOVoiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==)"></i>
+            <input id="address" type="text" value="Snarøyveien 30, 1360 Fornebu" placeholder="Søk etter adresse" autocomplete="off"
+                   role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="addrPanel" />
+            <button class="icon-btn" id="addressClear" type="button" aria-label="Tøm adresse"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJSZW1vdmUiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTguNzU1NjcgNy42NTA3QzguNDUwNTcgNy4zNDU2IDcuOTU1OTEgNy4zNDU2IDcuNjUwODIgNy42NTA3QzcuMzQ1NzIgNy45NTU3OSA3LjM0NTcyIDguNDUwNDYgNy42NTA4MiA4Ljc1NTU1TDExLjM5NTMgMTIuNUw3LjY1MDcgMTYuMjQ0NkM3LjM0NTYgMTYuNTQ5NyA3LjM0NTYgMTcuMDQ0MyA3LjY1MDcgMTcuMzQ5NEM3Ljk1NTc5IDE3LjY1NDUgOC40NTA0NSAxNy42NTQ1IDguNzU1NTUgMTcuMzQ5NEwxMi41MDAxIDEzLjYwNDlMMTYuMjQ0NiAxNy4zNDkzQzE2LjU0OTcgMTcuNjU0NCAxNy4wNDQzIDE3LjY1NDQgMTcuMzQ5NCAxNy4zNDkzQzE3LjY1NDUgMTcuMDQ0MiAxNy42NTQ1IDE2LjU0OTUgMTcuMzQ5NCAxNi4yNDQ0TDEzLjYwNSAxMi41TDE3LjM0OTMgOC43NTU2N0MxNy42NTQ0IDguNDUwNTcgMTcuNjU0NCA3Ljk1NTkxIDE3LjM0OTMgNy42NTA4MkMxNy4wNDQyIDcuMzQ1NzIgMTYuNTQ5NSA3LjM0NTcyIDE2LjI0NDQgNy42NTA4MkwxMi41MDAxIDExLjM5NTFMOC43NTU2NyA3LjY1MDdaIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==);width:25px;height:25px"></i></button>
+          </div>
+          <ul class="addr__panel" id="addrPanel" role="listbox" aria-label="Adresseforslag"></ul>
         </div>
       </div>
 
@@ -900,7 +921,7 @@
                 <div class="field" id="dateField">
                   <button class="date-trigger" id="dateBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-labelledby="date-title dateText">
                     <i class="field__icon ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJDYWxlbmRhciI+CjxnIGlkPSJJY29uIj4KPHBhdGggZD0iTTExLjcxODggMTMuMjgxMkMxMS43MTg4IDEzLjcxMjcgMTEuMzY5IDE0LjA2MjUgMTAuOTM3NSAxNC4wNjI1QzEwLjUwNiAxNC4wNjI1IDEwLjE1NjIgMTMuNzEyNyAxMC4xNTYyIDEzLjI4MTJDMTAuMTU2MiAxMi44NDk4IDEwLjUwNiAxMi41IDEwLjkzNzUgMTIuNUMxMS4zNjkgMTIuNSAxMS43MTg4IDEyLjg0OTggMTEuNzE4OCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTAuOTM3NSAxNy45Njg4QzExLjM2OSAxNy45Njg4IDExLjcxODggMTcuNjE5IDExLjcxODggMTcuMTg3NUMxMS43MTg4IDE2Ljc1NiAxMS4zNjkgMTYuNDA2MiAxMC45Mzc1IDE2LjQwNjJDMTAuNTA2IDE2LjQwNjIgMTAuMTU2MiAxNi43NTYgMTAuMTU2MiAxNy4xODc1QzEwLjE1NjIgMTcuNjE5IDEwLjUwNiAxNy45Njg4IDEwLjkzNzUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTguNTkzNzUgMTMuMjgxMkM4LjU5Mzc1IDEzLjcxMjcgOC4yNDM5NyAxNC4wNjI1IDcuODEyNSAxNC4wNjI1QzcuMzgxMDMgMTQuMDYyNSA3LjAzMTI1IDEzLjcxMjcgNy4wMzEyNSAxMy4yODEyQzcuMDMxMjUgMTIuODQ5OCA3LjM4MTAzIDEyLjUgNy44MTI1IDEyLjVDOC4yNDM5NyAxMi41IDguNTkzNzUgMTIuODQ5OCA4LjU5Mzc1IDEzLjI4MTJaIiBmaWxsPSIjNEY1QjdEIi8+CjxwYXRoIGQ9Ik03LjgxMjUgMTcuOTY4OEM4LjI0Mzk3IDE3Ljk2ODggOC41OTM3NSAxNy42MTkgOC41OTM3NSAxNy4xODc1QzguNTkzNzUgMTYuNzU2IDguMjQzOTcgMTYuNDA2MiA3LjgxMjUgMTYuNDA2MkM3LjM4MTAzIDE2LjQwNjIgNy4wMzEyNSAxNi43NTYgNy4wMzEyNSAxNy4xODc1QzcuMDMxMjUgMTcuNjE5IDcuMzgxMDMgMTcuOTY4OCA3LjgxMjUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTE0Ljg0MzggMTMuMjgxMkMxNC44NDM4IDEzLjcxMjcgMTQuNDk0IDE0LjA2MjUgMTQuMDYyNSAxNC4wNjI1QzEzLjYzMSAxNC4wNjI1IDEzLjI4MTIgMTMuNzEyNyAxMy4yODEyIDEzLjI4MTJDMTMuMjgxMiAxMi44NDk4IDEzLjYzMSAxMi41IDE0LjA2MjUgMTIuNUMxNC40OTQgMTIuNSAxNC44NDM4IDEyLjg0OTggMTQuODQzOCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTQuMDYyNSAxNy45Njg4QzE0LjQ5NCAxNy45Njg4IDE0Ljg0MzggMTcuNjE5IDE0Ljg0MzggMTcuMTg3NUMxNC44NDM4IDE2Ljc1NiAxNC40OTQgMTYuNDA2MiAxNC4wNjI1IDE2LjQwNjJDMTMuNjMxIDE2LjQwNjIgMTMuMjgxMiAxNi43NTYgMTMuMjgxMiAxNy4xODc1QzEzLjI4MTIgMTcuNjE5IDEzLjYzMSAxNy45Njg4IDE0LjA2MjUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZD0iTTE3Ljk2ODggMTMuMjgxMkMxNy45Njg4IDEzLjcxMjcgMTcuNjE5IDE0LjA2MjUgMTcuMTg3NSAxNC4wNjI1QzE2Ljc1NiAxNC4wNjI1IDE2LjQwNjIgMTMuNzEyNyAxNi40MDYyIDEzLjI4MTJDMTYuNDA2MiAxMi44NDk4IDE2Ljc1NiAxMi41IDE3LjE4NzUgMTIuNUMxNy42MTkgMTIuNSAxNy45Njg4IDEyLjg0OTggMTcuOTY4OCAxMy4yODEyWiIgZmlsbD0iIzRGNUI3RCIvPgo8cGF0aCBkPSJNMTcuMTg3NSAxNy45Njg4QzE3LjYxOSAxNy45Njg4IDE3Ljk2ODggMTcuNjE5IDE3Ljk2ODggMTcuMTg3NUMxNy45Njg4IDE2Ljc1NiAxNy42MTkgMTYuNDA2MiAxNy4xODc1IDE2LjQwNjJDMTYuNzU2IDE2LjQwNjIgMTYuNDA2MiAxNi43NTYgMTYuNDA2MiAxNy4xODc1QzE2LjQwNjIgMTcuNjE5IDE2Ljc1NiAxNy45Njg4IDE3LjE4NzUgMTcuOTY4OFoiIGZpbGw9IiM0RjVCN0QiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNS42MjUgNC42ODc1SDkuMzc1VjMuOTA2MjVDOS4zNzUgMy40NzQ3OCA5LjAyNTIyIDMuMTI1IDguNTkzNzUgMy4xMjVDOC4xNjIyOCAzLjEyNSA3LjgxMjUgMy40NzQ3OCA3LjgxMjUgMy45MDYyNVY0LjY4NzVIMy45MDYyNUMzLjQ3NDc4IDQuNjg3NSAzLjEyNSA1LjAzNzI4IDMuMTI1IDUuNDY4NzVWMjEuMDkzOEMzLjEyNSAyMS41MjUyIDMuNDc0NzggMjEuODc1IDMuOTA2MjUgMjEuODc1SDIxLjA5MzhDMjEuNTI1MiAyMS44NzUgMjEuODc1IDIxLjUyNTIgMjEuODc1IDIxLjA5MzhWNS40Njg3NUMyMS44NzUgNS4wMzcyOCAyMS41MjUyIDQuNjg3NSAyMS4wOTM4IDQuNjg3NUgxNy4xODc1VjMuOTA2MjVDMTcuMTg3NSAzLjQ3NDc4IDE2LjgzNzcgMy4xMjUgMTYuNDA2MiAzLjEyNUMxNS45NzQ4IDMuMTI1IDE1LjYyNSAzLjQ3NDc4IDE1LjYyNSAzLjkwNjI1VjQuNjg3NVpNOC41OTM3NSA3LjgxMjVDOC4xNjIyOCA3LjgxMjUgNy44MTI1IDcuNDYyNzIgNy44MTI1IDcuMDMxMjVWNi4yNUg0LjY4NzVWOC41OTM3NUwyMC4zMTI1IDguNTkzNzVWNi4yNUgxNy4xODc1VjcuMDMxMjVDMTcuMTg3NSA3LjQ2MjcyIDE2LjgzNzcgNy44MTI1IDE2LjQwNjIgNy44MTI1QzE1Ljk3NDggNy44MTI1IDE1LjYyNSA3LjQ2MjcyIDE1LjYyNSA3LjAzMTI1VjYuMjVIOS4zNzVWNy4wMzEyNUM5LjM3NSA3LjQ2MjcyIDkuMDI1MjIgNy44MTI1IDguNTkzNzUgNy44MTI1Wk00LjY4NzUgMTAuMTU2MlYyMC4zMTI1SDIwLjMxMjVWMTAuMTU2Mkw0LjY4NzUgMTAuMTU2MloiIGZpbGw9IiM0RjVCN0QiLz4KPC9nPgo8L2c+Cjwvc3ZnPgo=)"></i>
-                    <span id="dateText">08.12.2026</span>
+                    <span id="dateText" class="is-placeholder">Velg dato</span>
                   </button>
                   <button class="icon-btn" id="dateClear" type="button" aria-label="Fjern dato"><i class="ico ico--subtle" style="--i:url(data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjI1IiBoZWlnaHQ9IjI1IiB2aWV3Qm94PSIwIDAgMjUgMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJSZW1vdmUiPgo8cGF0aCBpZD0iSWNvbiIgZD0iTTguNzU1NjcgNy42NTA3QzguNDUwNTcgNy4zNDU2IDcuOTU1OTEgNy4zNDU2IDcuNjUwODIgNy42NTA3QzcuMzQ1NzIgNy45NTU3OSA3LjM0NTcyIDguNDUwNDYgNy42NTA4MiA4Ljc1NTU1TDExLjM5NTMgMTIuNUw3LjY1MDcgMTYuMjQ0NkM3LjM0NTYgMTYuNTQ5NyA3LjM0NTYgMTcuMDQ0MyA3LjY1MDcgMTcuMzQ5NEM3Ljk1NTc5IDE3LjY1NDUgOC40NTA0NSAxNy42NTQ1IDguNzU1NTUgMTcuMzQ5NEwxMi41MDAxIDEzLjYwNDlMMTYuMjQ0NiAxNy4zNDkzQzE2LjU0OTcgMTcuNjU0NCAxNy4wNDQzIDE3LjY1NDQgMTcuMzQ5NCAxNy4zNDkzQzE3LjY1NDUgMTcuMDQ0MiAxNy42NTQ1IDE2LjU0OTUgMTcuMzQ5NCAxNi4yNDQ0TDEzLjYwNSAxMi41TDE3LjM0OTMgOC43NTU2N0MxNy42NTQ0IDguNDUwNTcgMTcuNjU0NCA3Ljk1NTkxIDE3LjM0OTMgNy42NTA4MkMxNy4wNDQyIDcuMzQ1NzIgMTYuNTQ5NSA3LjM0NTcyIDE2LjI0NDQgNy42NTA4MkwxMi41MDAxIDExLjM5NTFMOC43NTU2NyA3LjY1MDdaIiBmaWxsPSIjNEY1QjdEIi8+CjwvZz4KPC9zdmc+Cg==);width:25px;height:25px"></i></button>
                   <div class="calendar" id="calendar" role="dialog" aria-label="Velg dato">
@@ -912,6 +933,11 @@
                     <div class="cal__grid" id="calGrid"></div>
                   </div>
                 </div>
+                <label class="checkbox" style="margin-top:-8px">
+                  <input type="checkbox" id="firstDate" />
+                  <span class="checkbox__box" aria-hidden="true"></span>
+                  <span>Første tilgjengelige dato</span>
+                </label>
               </div>
             </div>
           </div>
@@ -1265,7 +1291,7 @@
   ];
 
   const state = {
-    discount: 0, selected: true, option: OPTIONS[0], date: new Date(2026, 11, 8),
+    discount: 0, selected: true, option: OPTIONS[0], date: null,
     pkg: { speed: "f500", tv: "stream", extras: ["router", "box"] },
   };
 
@@ -1308,13 +1334,14 @@
     const p = state.pkg;
     const items = [byId(SPEEDS, p.speed).label];
     if (p.tv !== "none") items.push(byId(TVS, p.tv).label);
+    const main = items.slice();
     EXTRAS.forEach((x) => { if (p.extras.includes(x.id)) items.push(x.label); });
     const ul = $("pkgChips");
     const build = () => {
       ul.innerHTML = "";
       items.forEach((t) => {
         const li = document.createElement("li");
-        li.className = "chip" + (prev && !prev.includes(t) ? " is-new" : "");
+        li.className = "chip" + (main.includes(t) ? " chip--alt1" : "") + (prev && !prev.includes(t) ? " is-new" : "");
         li.textContent = t; ul.appendChild(li);
       });
     };
@@ -1386,8 +1413,72 @@
   // ---------- Address ----------
   const address = $("address"), addressClear = $("addressClear");
   const syncAddress = () => { addressClear.hidden = !address.value; };
-  address.addEventListener("input", syncAddress);
-  addressClear.addEventListener("click", () => { address.value = ""; syncAddress(); address.focus(); });
+  addressClear.addEventListener("click", () => { address.value = ""; syncAddress(); closeAddr(); address.focus(); });
+
+  // Simulated address lookup: fake latency, then matches from a local list.
+  const ADDRESSES = [
+    "Slettevegen 7a, Kvinesdal", "Slettevegen 7b, Kvinesdal", "Slettevegen 7c, Kvinesdal", "Slettevegen 9, Kvinesdal",
+    "Slettebakken 12, Bergen", "Slettaveien 4, Lillestrøm", "Slettestrandvegen 21, Ålesund",
+    "Snarøyveien 30, 1360 Fornebu", "Snarøyveien 32, 1360 Fornebu", "Snarøyveien 36, 1364 Fornebu",
+    "Storgata 1, 0155 Oslo", "Storgata 14, 9008 Tromsø", "Storgata 52, 2609 Lillehammer",
+    "Karl Johans gate 22, 0159 Oslo", "Kongens gate 9, 7011 Trondheim", "Kirkegata 15, 4006 Stavanger",
+    "Bogstadveien 45, 0366 Oslo", "Thorvald Meyers gate 70, 0552 Oslo", "Torggata 3, 0181 Oslo",
+    "Strandgaten 18, 5013 Bergen", "Olav Tryggvasons gate 28, 7011 Trondheim", "Markens gate 33, 4611 Kristiansand",
+    "Fjordveien 7, 1363 Høvik", "Fjellveien 101, 5019 Bergen", "Skogveien 5, 1406 Ski",
+    "Bjørnstjerne Bjørnsons gate 8, 3044 Drammen", "Haakon VIIs gate 2, 4005 Stavanger", "Nedre Slottsgate 13, 0157 Oslo",
+  ];
+  const addr = $("addr"), addrPanel = $("addrPanel");
+  const norm = (s) => s.toLowerCase().replace(/\s+/g, " ").trim();
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  let addrTimer = null, addrSeq = 0, addrActive = -1;
+  function openAddr(open) {
+    addr.classList.toggle("is-open", open);
+    address.setAttribute("aria-expanded", String(open));
+    if (!open) { addrActive = -1; address.removeAttribute("aria-activedescendant"); }
+  }
+  function closeAddr() { clearTimeout(addrTimer); addrSeq++; openAddr(false); }
+  function setAddrActive(i) {
+    const opts = [...addrPanel.querySelectorAll(".addr__opt")];
+    if (!opts.length) return;
+    addrActive = (i + opts.length) % opts.length;
+    opts.forEach((o, n) => { o.classList.toggle("is-active", n === addrActive); o.setAttribute("aria-selected", String(n === addrActive)); });
+    address.setAttribute("aria-activedescendant", opts[addrActive].id);
+    opts[addrActive].scrollIntoView({ block: "nearest" });
+  }
+  function pickAddr(text) { address.value = text; syncAddress(); closeAddr(); }
+  function showResults(q) {
+    const nq = norm(q);
+    const hits = ADDRESSES.filter((a) => norm(a).includes(nq)).slice(0, 6);
+    addrActive = -1;
+    if (!hits.length) { addrPanel.innerHTML = `<li class="addr__status" role="presentation">Ingen adresser funnet for «${esc(q.trim())}»</li>`; return; }
+    addrPanel.innerHTML = hits.map((a, i) => {
+      const at = norm(a).indexOf(nq);
+      const label = at < 0 ? esc(a) : esc(a.slice(0, at)) + "<mark>" + esc(a.slice(at, at + nq.length)) + "</mark>" + esc(a.slice(at + nq.length));
+      return `<li class="addr__opt" id="addr-opt-${i}" role="option" aria-selected="false" data-value="${esc(a)}">${label}</li>`;
+    }).join("");
+  }
+  address.addEventListener("input", () => {
+    syncAddress();
+    const q = address.value;
+    clearTimeout(addrTimer);
+    if (norm(q).length < 2) { closeAddr(); return; }
+    const seq = ++addrSeq;
+    addrPanel.innerHTML = '<li class="addr__status" role="presentation"><span class="addr__spin" aria-hidden="true"></span>Søker …</li>';
+    openAddr(true);
+    addrTimer = setTimeout(() => { if (seq === addrSeq) showResults(q); }, 350 + Math.random() * 350);
+  });
+  address.addEventListener("keydown", (e) => {
+    if (!addr.classList.contains("is-open")) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); setAddrActive(addrActive + 1); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); setAddrActive(addrActive - 1); }
+    else if (e.key === "Enter") {
+      const opt = addrPanel.querySelectorAll(".addr__opt")[addrActive];
+      if (opt) { e.preventDefault(); pickAddr(opt.dataset.value); }
+    } else if (e.key === "Escape") { e.preventDefault(); closeAddr(); }
+  });
+  addrPanel.addEventListener("mousedown", (e) => e.preventDefault());
+  addrPanel.addEventListener("click", (e) => { const o = e.target.closest(".addr__opt"); if (o) pickAddr(o.dataset.value); });
+  address.addEventListener("blur", closeAddr);
   renderChips();
 
   // ---------- Magnetic slider ----------
@@ -1532,11 +1623,13 @@
   const today = new Date(2026, 9, 14); today.setHours(0, 0, 0, 0);
   const real = new Date(); real.setHours(0, 0, 0, 0);
   if (real > today) today.setTime(real.getTime());
-  let view = new Date(state.date.getFullYear(), state.date.getMonth(), 1);
+  let view = new Date(today.getFullYear(), today.getMonth(), 1);
   const fmt = (d) => d.toLocaleDateString("nb-NO", { day: "2-digit", month: "2-digit", year: "numeric" });
   const same = (a, b) => a && b && a.toDateString() === b.toDateString();
 
+  const firstDate = $("firstDate");
   function syncDate() {
+    firstDate.checked = same(state.date, today) === true;
     const t = $("dateText");
     t.textContent = state.date ? fmt(state.date) : "Velg dato";
     t.classList.toggle("is-placeholder", !state.date);
@@ -1581,6 +1674,7 @@
   }
   dateBtn.addEventListener("click", () => openCal(!cal.classList.contains("is-open")));
   $("dateClear").addEventListener("click", () => { state.date = null; syncDate(); dateBtn.focus(); });
+  firstDate.addEventListener("change", () => { state.date = firstDate.checked ? new Date(today) : null; syncDate(); });
   $("calPrev").addEventListener("click", () => { view.setMonth(view.getMonth() - 1); buildCal(); });
   $("calNext").addEventListener("click", () => { view.setMonth(view.getMonth() + 1); buildCal(); });
   cal.addEventListener("keydown", (e) => {
