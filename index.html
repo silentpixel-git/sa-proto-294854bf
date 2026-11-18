@@ -884,7 +884,7 @@
                 <div class="range__track" id="track">
                   <div class="range__fill" id="fill"></div>
                   <div class="range__thumb" id="thumb" role="slider" tabindex="0"
-                       aria-label="Månedlig rabatt" aria-valuemin="0" aria-valuemax="800" aria-valuenow="0" aria-valuetext="0 kroner rabatt per måned"></div>
+                       aria-label="Månedlig rabatt" aria-valuemin="0" aria-valuemax="800" aria-valuenow="400" aria-valuetext="400 kroner rabatt per måned"></div>
                 </div>
                 <div class="range__labels"><span>Full provisjon</span><span>Redusert provisjon</span></div>
               </div>
@@ -1266,7 +1266,7 @@
 <script>
 (() => {
   const ESTABLISHMENT_PRICE = 4995;
-  const STEP = 50, MAX_DISCOUNT = 800;
+  const STEP = 50, MAX_DISCOUNT = 800, RECOMMENDED_DISCOUNT = 400;
   const OPTIONS = [
     { id: "b3000", label: "3 000,- i rabatt ved 12 md. binding", discount: 3000 },
     { id: "none",  label: "Ingen binding", discount: 0 },
@@ -1291,7 +1291,7 @@
   ];
 
   const state = {
-    discount: 0, selected: true, option: OPTIONS[0], date: null,
+    discount: RECOMMENDED_DISCOUNT, selected: true, option: OPTIONS[0], date: null,
     pkg: { speed: "f500", tv: "stream", extras: ["router", "box"] },
   };
 
@@ -1484,8 +1484,8 @@
   // ---------- Magnetic slider ----------
   const track = $("track"), thumb = $("thumb"), fill = $("fill"), tip = $("tip"), tipBox = $("tipText"), range = $("range");
 
-  let shown = 0;      // currently rendered (continuous) value
-  let target = 0;     // where the thumb wants to be (continuous, magnet-shaped)
+  let shown = RECOMMENDED_DISCOUNT;      // currently rendered (continuous) value
+  let target = RECOMMENDED_DISCOUNT;     // where the thumb wants to be (continuous, magnet-shaped)
   let dragging = false, raf = null;
 
   // Pull raw value toward the nearest 50-kr step. Cubic curve keeps it
@@ -2151,7 +2151,7 @@
     if (!$("dateField").contains(e.target)) openCal(false);
   });
 
-  syncSelect(); syncDate(); render(); paint(0); ready = true;
+  syncSelect(); syncDate(); render(); paint(RECOMMENDED_DISCOUNT); ready = true;
 })();
 </script>
 </body>
